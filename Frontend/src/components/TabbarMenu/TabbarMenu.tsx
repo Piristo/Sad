@@ -3,9 +3,7 @@ import type { FC } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect, useMemo, useCallback } from 'react';
 
-import PersonIcon from '@mui/icons-material/Person';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
+import { Icon24Close } from '@telegram-apps/telegram-ui/dist/icons/24/close'
 
 import { ROUTES } from '@/constants/routes.ts';
 
@@ -18,19 +16,19 @@ export const TabbarMenu: FC = () => {
       {
         id: 1,
         text: 'вкладка 1',
-        Icon: FormatListBulletedIcon,
-        path: ROUTES.CATALOG,
+        Icon: Icon24Close,
+        path: ROUTES.ENTER,
       },
       {
         id: 2,
         text: 'вкладка 2',
-        Icon: ShoppingCartIcon,
+        Icon: Icon24Close,
         path: ROUTES.CART,
       },
       {
         id: 3,
-        text: 'вкладка 2',
-        Icon: PersonIcon,
+        text: 'вкладка 3',
+        Icon: Icon24Close,
         path: ROUTES.MY_ACCOUNT,
       },
     ],
@@ -78,3 +76,4 @@ export const TabbarMenu: FC = () => {
     </Tabbar>
   );
 };
+
