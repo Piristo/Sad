@@ -1,5 +1,5 @@
 {
-  "name": "yourApp",
+  "name": "app",
   "private": true,
   "version": "0.0.1",
   "type": "module",
@@ -46,6 +46,7 @@
     "vite-tsconfig-paths": "^5.1.4"
   }
 }
+
 
 
 
