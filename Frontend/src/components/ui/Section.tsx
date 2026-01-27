@@ -2,7 +2,7 @@
 
 import { classNames } from '@/css/classnames.ts';
 
-export interface SectionProps extends HTMLAttributes<HTMLElement> {
+export interface SectionProps extends Omit<HTMLAttributes<HTMLElement>, 'title'> {
   title?: ReactNode;
   hint?: ReactNode;
 }
