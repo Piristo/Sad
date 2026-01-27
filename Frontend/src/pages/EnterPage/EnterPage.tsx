@@ -13,6 +13,10 @@ export const EnterPage: FC = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    if (!tlgid) {
+      return;
+    }
+
     const fetchEnter = async () => {
       try {
         const response = await axios.post('/enter', { tlgid: tlgid });
@@ -21,7 +25,7 @@ export const EnterPage: FC = () => {
           setIsLoading(false);
         }
 
-        const { result } = response.data.userData;
+        const { result } = response.data.userData || {};
 
         if (result === 'showOnboarding') {
           navigate('/onboarding');
@@ -33,7 +37,7 @@ export const EnterPage: FC = () => {
       }
     };
     fetchEnter();
-  }, []);
+  }, [tlgid, navigate]);
 
   return (
     <Page>
