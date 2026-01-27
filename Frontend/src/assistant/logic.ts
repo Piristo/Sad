@@ -6,6 +6,7 @@
   Status,
   TaskAssessment,
   TaskId,
+  TaskItem,
 } from './types';
 import { ZODIAC_FERTILITY } from './data';
 import { formatDate, getLunarContext } from './lunar';

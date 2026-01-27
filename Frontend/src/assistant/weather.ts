@@ -62,7 +62,8 @@ export async function fetchWeather(region: string, timeZone: string): Promise<We
   }>(forecastUrl);
 
   const daily = forecast.daily;
-  if (!forecast.current || !daily) return null;
+  const current = forecast.current;
+  if (!current || !daily) return null;
 
   const locationLabel = [location.name, location.admin1, location.country]
     .filter(Boolean)
@@ -70,17 +71,17 @@ export async function fetchWeather(region: string, timeZone: string): Promise<We
 
   const dailyForecast: WeatherDay[] = (daily.time || []).slice(0, 7).map((date, index) => ({
     date,
-    min: daily.temperature_2m_min?.[index] ?? forecast.current.temperature_2m,
-    max: daily.temperature_2m_max?.[index] ?? forecast.current.temperature_2m,
+    min: daily.temperature_2m_min?.[index] ?? current.temperature_2m,
+    max: daily.temperature_2m_max?.[index] ?? current.temperature_2m,
     precipitation: daily.precipitation_sum?.[index] ?? 0,
   }));
 
   return {
     location: locationLabel,
-    temperature: forecast.current.temperature_2m,
-    wind: forecast.current.wind_speed_10m,
-    min: daily.temperature_2m_min?.[0] ?? forecast.current.temperature_2m,
-    max: daily.temperature_2m_max?.[0] ?? forecast.current.temperature_2m,
+    temperature: current.temperature_2m,
+    wind: current.wind_speed_10m,
+    min: daily.temperature_2m_min?.[0] ?? current.temperature_2m,
+    max: daily.temperature_2m_max?.[0] ?? current.temperature_2m,
     precipitation: daily.precipitation_sum?.[0] ?? 0,
     daily: dailyForecast,
     updatedAt: new Date().toISOString(),

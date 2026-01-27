@@ -4,7 +4,7 @@ import { classNames } from '@/css/classnames.ts';
 
 export type CardVariant = 'default' | 'glass' | 'accent';
 
-export interface CardProps extends HTMLAttributes<HTMLDivElement> {
+export interface CardProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title'> {
   title?: ReactNode;
   subtitle?: ReactNode;
   variant?: CardVariant;
