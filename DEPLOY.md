@@ -1,29 +1,33 @@
-# Deploy (Vercel + MongoDB Atlas)
+# Deploy (Cloudflare Pages + Supabase)
 
-This project is deployed as a Vercel SPA with Vercel Functions under `Frontend/api`.
+This project is deployed as a Cloudflare Pages SPA with Pages Functions under `Frontend/functions`.
 
-## 1) MongoDB Atlas (free M0)
-1. Create an M0 cluster.
-2. Create a database user.
-3. Add Network Access `0.0.0.0/0` (for quick start).
-4. Copy the connection string:
-   `mongodb+srv://USER:PASSWORD@cluster.mongodb.net/DBNAME?retryWrites=true&w=majority`
+## 1) Supabase (free)
+1. Create a project.
+2. Create a table `users`:
+   - `id` bigint, identity, primary key
+   - `tlgid` bigint, unique, not null
+   - `name` text, nullable
+3. Get:
+   - `SUPABASE_URL`
+   - `SUPABASE_SERVICE_ROLE_KEY` (server-only)
 
 ## 2) GitHub
-1. Create a new repo.
+1. Create a repo.
 2. Push this project to GitHub.
 
-## 3) Vercel
-1. Import the GitHub repo in Vercel.
+## 3) Cloudflare Pages
+1. Create a Pages project and connect the GitHub repo.
 2. Set **Root Directory** to `Frontend`.
 3. Build Command: `npm run build`
 4. Output Directory: `dist`
-5. Environment Variables:
-   - `DATABASE_URL` = Atlas connection string
+5. Environment Variables (Pages > Settings > Environment variables):
+   - `SUPABASE_URL`
+   - `SUPABASE_SERVICE_ROLE_KEY`
    - `VITE_API_URL` = `/api`
 
 ## 4) Verify
-Open `https://<your-project>.vercel.app/api` and verify it returns JSON.
+Open `https://<your-project>.pages.dev/api` and verify it returns JSON.
 
 ## 5) Telegram
-Update the WebApp domain in BotFather `/setdomain` to the Vercel domain.
+Update the WebApp domain in BotFather `/setdomain` to the Pages domain.
