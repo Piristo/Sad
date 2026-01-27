@@ -1,10 +1,8 @@
-import { Tabbar } from '@telegram-apps/telegram-ui';
-import type { FC } from 'react';
+﻿import type { FC } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect, useMemo, useCallback } from 'react';
 
-import { Icon24Close } from '@telegram-apps/telegram-ui/dist/icons/24/close'
-
+import { Button } from '@/components/ui';
 import { ROUTES } from '@/constants/routes.ts';
 
 export const TabbarMenu: FC = () => {
@@ -15,24 +13,16 @@ export const TabbarMenu: FC = () => {
     () => [
       {
         id: 1,
-        text: 'вкладка 1',
-        Icon: Icon24Close,
+        text: 'Главная',
         path: ROUTES.ENTER,
       },
       {
         id: 2,
-        text: 'вкладка 2',
-        Icon: Icon24Close,
-        path: ROUTES.CART,
-      },
-      {
-        id: 3,
-        text: 'вкладка 3',
-        Icon: Icon24Close,
+        text: 'Профиль',
         path: ROUTES.MY_ACCOUNT,
       },
     ],
-    ['вкладка 1', 'вкладка 2', 'вкладка 3']
+    []
   );
 
   const getInitialTab = useCallback(() => {
@@ -42,7 +32,6 @@ export const TabbarMenu: FC = () => {
 
   const [currentTab, setCurrentTab] = useState(getInitialTab());
 
-  // Синхронизируем состояние при изменении URL через навигацию вручную
   useEffect(() => {
     const currentTab = tabs.find((tab) => tab.path === location.pathname);
     if (currentTab) {
@@ -62,18 +51,16 @@ export const TabbarMenu: FC = () => {
   );
 
   return (
-    <Tabbar>
-      {tabs.map(({ id, text, Icon }) => (
-        <Tabbar.Item
+    <div className="assistant__chips">
+      {tabs.map(({ id, text }) => (
+        <Button
           key={id}
-          text={text}
-          selected={id === currentTab}
+          variant={id === currentTab ? 'primary' : 'chip'}
           onClick={() => changePage(id)}
         >
-          <Icon />
-        </Tabbar.Item>
+          {text}
+        </Button>
       ))}
-    </Tabbar>
+    </div>
   );
 };
-

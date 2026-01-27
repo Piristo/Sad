@@ -1,10 +1,10 @@
-import { isRGB } from '@tma.js/sdk-react';
-import { Cell, Checkbox, Section } from '@telegram-apps/telegram-ui';
+﻿import { isRGB } from '@tma.js/sdk-react';
 import type { FC, ReactNode } from 'react';
 
 import { RGB } from '@/components/RGB/RGB.tsx';
 import { Link } from '@/components/Link/Link.tsx';
 import { bem } from '@/css/bem.ts';
+import { Card } from '@/components/ui';
 
 import './DisplayData.css';
 
@@ -24,7 +24,8 @@ export interface DisplayDataProps {
 }
 
 export const DisplayData: FC<DisplayDataProps> = ({ header, rows }) => (
-  <Section header={header}>
+  <Card variant="glass">
+    {header && <div className="display-data__header">{header}</div>}
     {rows.map((item, idx) => {
       let valueNode: ReactNode;
 
@@ -38,25 +39,18 @@ export const DisplayData: FC<DisplayDataProps> = ({ header, rows }) => (
             ? <RGB color={item.value}/>
             : item.value;
         } else if (typeof item.value === 'boolean') {
-          valueNode = <Checkbox checked={item.value} disabled/>;
+          valueNode = item.value ? 'Да' : 'Нет';
         } else {
           valueNode = item.value;
         }
       }
 
       return (
-        <Cell
-          className={e('line')}
-          subhead={item.title}
-          readOnly
-          multiline={true}
-          key={idx}
-        >
-          <span className={e('line-value')}>
-            {valueNode}
-          </span>
-        </Cell>
+        <div className={e('line')} key={idx}>
+          <div className={e('line-title')}>{item.title}</div>
+          <div className={e('line-value')}>{valueNode}</div>
+        </div>
       );
     })}
-  </Section>
+  </Card>
 );

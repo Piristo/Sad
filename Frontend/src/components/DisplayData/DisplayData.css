@@ -1,15 +1,25 @@
-.display-data__header {
-  font-weight: 400;
+﻿.display-data__header {
+  font-weight: 500;
+  margin-bottom: 10px;
 }
 
 .display-data__line {
-  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.display-data__line:last-child {
+  border-bottom: none;
 }
 
 .display-data__line-title {
-  color: var(--tg-theme-subtitle-text-color);
+  color: rgba(236, 246, 237, 0.6);
+  font-size: 13px;
 }
 
 .display-data__line-value {
   word-break: break-word;
+  font-size: 14px;
 }
