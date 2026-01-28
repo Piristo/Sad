@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { Page } from '@/components/Page.tsx';
 import { Button, Card, Input, Section, Select } from '@/components/ui';
+import { WeatherWidget } from '@/components/WeatherWidget';
 import {
   CULTURE_GROUPS,
   DEFAULT_REGION,
@@ -434,6 +435,31 @@ export const IndexPage: FC = () => {
     const day = String(today.getUTCDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   });
+
+  // Weather notifications
+  useEffect(() => {
+    if (typeof window === 'undefined' || !('Notification' in window)) return;
+    
+    const checkWeatherAlerts = async () => {
+      try {
+        const weather = await import('@/services/weather').then(m => m.weatherService.getWeather());
+        const criticalRecs = weather.recommendations.filter(r => 
+          r.includes('Внимание') || r.includes('Заморозки') || r.includes('Сильный ветер')
+        );
+
+        if (criticalRecs.length > 0 && Notification.permission === 'granted') {
+          new Notification('Погодное предупреждение', {
+            body: criticalRecs[0],
+            icon: '/icon-192x192.png' // Make sure this icon exists or remove
+          });
+        }
+      } catch (e) {
+        // Ignore weather errors here
+      }
+    };
+
+    checkWeatherAlerts();
+  }, []);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -985,6 +1011,7 @@ export const IndexPage: FC = () => {
 
         {flow === 'home' && (
           <Section>
+            <WeatherWidget />
             <Card className="assistant__hero-card" variant="accent">
               <div className="assistant__hero">
                 <div className="assistant__hero-content">
