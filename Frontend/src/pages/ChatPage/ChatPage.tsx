@@ -24,6 +24,13 @@ export const ChatPage: FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  const QUICK_QUESTIONS = [
+    'Почему желтеют листья?',
+    'Когда поливать томаты?',
+    'Как избавиться от тли?',
+    'Чем подкормить клубнику?',
+  ];
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -129,6 +136,14 @@ export const ChatPage: FC = () => {
             </div>
           )}
           <div ref={messagesEndRef} />
+        </div>
+
+        <div className="chat-suggestions">
+          {QUICK_QUESTIONS.map((q, i) => (
+            <button key={i} className="chat-suggestion-chip" onClick={() => setInputValue(q)}>
+              {q}
+            </button>
+          ))}
         </div>
 
         <div className="chat-input-area">

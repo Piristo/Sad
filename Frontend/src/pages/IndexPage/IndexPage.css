@@ -661,6 +661,16 @@
   margin: 0;
 }
 
+/* Tab Animation */
+.tab-content {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .journal__entry-notes {
   font-size: 14px;
   color: rgba(236, 246, 237, 0.8);
@@ -788,4 +798,106 @@
   .journal__entry-actions {
     flex-wrap: wrap;
   }
+}
+
+/* Pest Control Styles */
+.pest-control__grid {
+  display: grid;
+  gap: 12px;
+}
+
+.pest-control__card {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  overflow: hidden;
+}
+
+.pest-control__card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-1px);
+}
+
+.pest-control__header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 4px;
+}
+
+.pest-control__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.pest-control__icon--pest {
+  background: rgba(255, 107, 107, 0.15);
+  border: 1px solid rgba(255, 107, 107, 0.3);
+}
+
+.pest-control__icon--disease {
+  background: rgba(107, 107, 255, 0.15);
+  border: 1px solid rgba(107, 107, 255, 0.3);
+}
+
+.pest-control__info {
+  flex: 1;
+}
+
+.pest-control__title {
+  font-size: 16px;
+  font-weight: 600;
+  color: rgba(236, 246, 237, 0.95);
+  margin: 0 0 4px 0;
+}
+
+.pest-control__type {
+  font-size: 12px;
+  color: rgba(236, 246, 237, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pest-control__arrow {
+  color: rgba(236, 246, 237, 0.4);
+  font-size: 12px;
+  transition: transform 0.3s ease;
+}
+
+.pest-control__arrow--active {
+  transform: rotate(180deg);
+  color: #9df074;
+}
+
+.pest-control__details {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: grid;
+  gap: 16px;
+  animation: floatIn 0.3s ease-out;
+}
+
+.pest-control__block {
+  display: grid;
+  gap: 4px;
+}
+
+.pest-control__label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #9df074;
+  text-transform: uppercase;
+}
+
+.pest-control__text {
+  font-size: 14px;
+  color: rgba(236, 246, 237, 0.8);
+  line-height: 1.5;
+  margin: 0;
 }

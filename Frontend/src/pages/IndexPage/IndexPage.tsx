@@ -349,6 +349,58 @@ function loadReminders(): ReminderItem[] {
   }
 }
 
+interface PestControlItem {
+  id: string;
+  title: string;
+  symptoms: string;
+  treatment: string;
+  prevention: string;
+  type: 'pest' | 'disease';
+}
+
+const PEST_CONTROL_DATA: PestControlItem[] = [
+  {
+    id: 'aphids',
+    title: 'Тля',
+    type: 'pest',
+    symptoms: 'Скрученные листья, липкий налет, мелкие зеленые или черные насекомые.',
+    treatment: 'Опрыскивание мыльным раствором (300г хоз. мыла на 10л воды) или настоем чеснока. Биопрепараты: Фитоверм.',
+    prevention: 'Привлечение божьих коровок, высадка бархатцев рядом с грядками.',
+  },
+  {
+    id: 'phytophthora',
+    title: 'Фитофтора',
+    type: 'disease',
+    symptoms: 'Бурые пятна на листьях и плодах, белый налет с обратной стороны листа.',
+    treatment: 'Удаление пораженных листьев. Обработка Фитоспорином или препаратами меди (Ордан, Хом).',
+    prevention: 'Не загущать посадки, поливать под корень, мульчирование почвы.',
+  },
+  {
+    id: 'powdery_mildew',
+    title: 'Мучнистая роса',
+    type: 'disease',
+    symptoms: 'Белый мучнистый налет на листьях, похожий на муку.',
+    treatment: 'Опрыскивание раствором соды (50г + 10л воды) или сывороткой (1:10). Топаз, Скор.',
+    prevention: 'Выбор устойчивых сортов, уборка растительных остатков.',
+  },
+  {
+    id: 'slugs',
+    title: 'Слизни',
+    type: 'pest',
+    symptoms: 'Дырки на листьях, следы слизи на растениях и почве.',
+    treatment: 'Ручной сбор, ловушки с пивом. Рассыпать золу, яичную скорлупу или суперфосфат.',
+    prevention: 'Удаление сорняков, регулярное рыхление почвы.',
+  },
+  {
+    id: 'spider_mite',
+    title: 'Паутинный клещ',
+    type: 'pest',
+    symptoms: 'Мелкие желтые точки на листьях, тонкая паутинка.',
+    treatment: 'Опрыскивание водой (любят сухость), Фитоверм, Актеллик.',
+    prevention: 'Поддержание влажности, опрыскивание растений водой.',
+  },
+];
+
 export const IndexPage: FC = () => {
   const navigate = useNavigate();
   const todayParts = useMemo(() => getZonedParts(new Date(), DEFAULT_TIMEZONE), []);
@@ -367,6 +419,7 @@ export const IndexPage: FC = () => {
     initialPlots[0]?.id ?? DEFAULT_PLOTS[0].id,
   );
   const [newPlotName, setNewPlotName] = useState('');
+  const [selectedPest, setSelectedPest] = useState<PestControlItem | null>(null);
 
   const activePlot = useMemo(
     () => plots.find((plot) => plot.id === activePlotId) ?? plots[0],
@@ -962,7 +1015,11 @@ export const IndexPage: FC = () => {
       <div className="assistant" style={{ paddingBottom: '90px' }}>
         <header className="assistant__header">
           <div className="assistant__topline">
-            <div className="assistant__brand">
+            <div 
+              className="assistant__brand" 
+              onClick={() => setActiveTab('home')}
+              style={{ cursor: 'pointer' }}
+            >
               <div className="assistant__leaf">
                 <span className="assistant__leaf-mark">
                   <svg viewBox="0 0 24 24" aria-hidden>
@@ -986,7 +1043,7 @@ export const IndexPage: FC = () => {
         </header>
 
         {activeTab === 'home' && (
-          <>
+          <div className="tab-content">
             {flow === 'home' && (
               <Section>
                 <WeatherWidget 
@@ -1780,11 +1837,11 @@ export const IndexPage: FC = () => {
                 </Section>
               </>
             )}
-          </>
+          </div>
         )}
 
         {activeTab === 'calendar' && (
-          <>
+          <div className="tab-content">
             <Section title="Календарь работ по участкам на месяц" hint="Выберите участок и месяц">
               <Card variant="accent">
                 <div className="assistant__custom-row">
@@ -1873,11 +1930,11 @@ export const IndexPage: FC = () => {
                 ))}
               </div>
             </Section>
-          </>
+          </div>
         )}
 
         {activeTab === 'assistant' && (
-          <>
+          <div className="tab-content">
             <Card className="assistant__hero-card" variant="accent">
               <div className="assistant__hero">
                 <div className="assistant__hero-content">
@@ -1897,6 +1954,51 @@ export const IndexPage: FC = () => {
                 </div>
               </div>
             </Card>
+
+            <Section title="Скорая помощь растениям" hint="Справочник болезней и вредителей">
+              <div className="pest-control__grid">
+                {PEST_CONTROL_DATA.map((item) => (
+                  <Card
+                    key={item.id}
+                    variant="glass"
+                    className="pest-control__card"
+                    onClick={() => setSelectedPest(selectedPest?.id === item.id ? null : item)}
+                  >
+                    <div className="pest-control__header">
+                      <div className={`pest-control__icon pest-control__icon--${item.type}`}>
+                        {item.type === 'pest' ? '🐛' : '🍄'}
+                      </div>
+                      <div className="pest-control__info">
+                        <h3 className="pest-control__title">{item.title}</h3>
+                        <span className="pest-control__type">
+                          {item.type === 'pest' ? 'Вредитель' : 'Болезнь'}
+                        </span>
+                      </div>
+                      <div className={`pest-control__arrow ${selectedPest?.id === item.id ? 'pest-control__arrow--active' : ''}`}>
+                        ▼
+                      </div>
+                    </div>
+                    
+                    {selectedPest?.id === item.id && (
+                      <div className="pest-control__details">
+                        <div className="pest-control__block">
+                          <span className="pest-control__label">Симптомы:</span>
+                          <p className="pest-control__text">{item.symptoms}</p>
+                        </div>
+                        <div className="pest-control__block">
+                          <span className="pest-control__label">Лечение:</span>
+                          <p className="pest-control__text">{item.treatment}</p>
+                        </div>
+                        <div className="pest-control__block">
+                          <span className="pest-control__label">Профилактика:</span>
+                          <p className="pest-control__text">{item.prevention}</p>
+                        </div>
+                      </div>
+                    )}
+                  </Card>
+                ))}
+              </div>
+            </Section>
 
             <Section title="Сводка дня">
               <Card className="assistant__summary" variant="glass">
@@ -1963,11 +2065,12 @@ export const IndexPage: FC = () => {
                 )}
               </div>
             </Section>
-          </>
+          </div>
         )}
 
         {activeTab === 'profile' && (
-          <Section title="Настройки профиля">
+          <div className="tab-content">
+            <Section title="Настройки профиля">
             <Card variant="glass">
               <div className="assistant__custom-row">
                 <div className="assistant__avatar" style={{ width: '64px', height: '64px' }} />
@@ -2018,6 +2121,7 @@ export const IndexPage: FC = () => {
               </Card>
             </Section>
           </Section>
+          </div>
         )}
 
         <TabBar activeTab={activeTab} onTabChange={setActiveTab} />
