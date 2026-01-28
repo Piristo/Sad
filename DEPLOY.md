@@ -25,9 +25,11 @@ This project is deployed as a Cloudflare Pages SPA with Pages Functions under `F
    - `SUPABASE_URL`
    - `SUPABASE_SERVICE_ROLE_KEY`
    - `VITE_API_URL` = `/api`
+   - `POLZA_API_KEY` = your Polza.ai API key
 
 ## 4) Verify
 Open `https://<your-project>.pages.dev/api` and verify it returns JSON.
+Open `https://<your-project>.pages.dev/api/ai` with a POST request and verify it returns a completion.
 
 ## 5) Telegram
 Update the WebApp domain in BotFather `/setdomain` to the Pages domain.
