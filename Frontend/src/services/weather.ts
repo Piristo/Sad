@@ -46,7 +46,27 @@ export class WeatherService {
       const response = await fetch(`/api/weather?city=${encodeURIComponent(city)}&units=metric&lang=ru`);
       
       if (!response.ok) {
-        throw new Error(`Weather API error: ${response.status}`);
+        // Читаем тело ответа, чтобы получить подробности об ошибке
+        let errorMessage = `Ошибка сервера: ${response.status}`;
+        try {
+          const errorData = await response.json();
+          if (errorData.error) {
+            errorMessage = errorData.error;
+          } else if (errorData.details) {
+            errorMessage = `${errorData.error || 'Ошибка'}: ${errorData.details}`;
+          }
+        } catch (parseError) {
+          // Если не удалось распарсить JSON, пробуем как текст
+          try {
+            const errorText = await response.text();
+            if (errorText) {
+              errorMessage = errorText;
+            }
+          } catch (textError) {
+            // Игнорируем ошибку парсинга, используем дефолтное сообщение
+          }
+        }
+        throw new Error(errorMessage);
       }
       
       const data: WeatherData = await response.json();
