@@ -1041,101 +1041,145 @@ export const IndexPage: FC = () => {
                 </div>
 
                 <Section title="Журнал посадок и работ" hint="Быстрые заметки">
-                  <Card variant="glass">
-                    <div className="assistant__custom-row">
-                      <Input
-                        value={journalDate}
-                        onChange={(event) => setJournalDate(event.target.value)}
-                        placeholder="ДД.ММ.ГГГГ"
-                      />
-                      <Select
-                        value={journalType}
-                        onChange={(event) => setJournalType(event.target.value as JournalType)}
-                      >
-                        <option value="посадка">Посадка</option>
-                        <option value="уход">Уход</option>
-                        <option value="сбор">Сбор</option>
-                        <option value="заметка">Заметка</option>
-                      </Select>
-                      <Input
-                        value={journalCulture}
-                        onChange={(event) => setJournalCulture(event.target.value)}
-                        placeholder="Культура"
-                      />
-                      <Button variant="secondary" onClick={addJournalEntry}>
-                        Добавить
-                      </Button>
-                    </div>
-                    <Input
-                      value={journalNotes}
-                      onChange={(event) => setJournalNotes(event.target.value)}
-                      placeholder="Короткая заметка"
-                    />
-                  </Card>
-                  <div className="assistant__results">
-                    {journal.slice(0, 3).map((entry) => (
-                      <Card key={entry.id} variant="glass">
-                        {editingEntryId === entry.id ? (
-                          <div className="assistant__edit">
-                            <div className="assistant__custom-row">
-                              <Input
-                                value={editDate}
-                                onChange={(event) => setEditDate(event.target.value)}
-                                placeholder="ДД.ММ.ГГГГ"
-                              />
-                              <Select
-                                value={editType}
-                                onChange={(event) => setEditType(event.target.value as JournalType)}
-                              >
-                                <option value="посадка">Посадка</option>
-                                <option value="уход">Уход</option>
-                                <option value="сбор">Сбор</option>
-                                <option value="заметка">Заметка</option>
-                              </Select>
-                              <Input
-                                value={editCulture}
-                                onChange={(event) => setEditCulture(event.target.value)}
-                                placeholder="Культура"
-                              />
-                            </div>
+                  <div className="journal__container">
+                    <Card variant="glass" className="journal__form-card">
+                      <div className="journal__form-header">
+                        <div className="journal__form-row">
+                          <div className="journal__input-group">
+                            <label className="journal__label">Дата</label>
                             <Input
-                              value={editNotes}
-                              onChange={(event) => setEditNotes(event.target.value)}
-                              placeholder="Заметка"
+                              value={journalDate}
+                              onChange={(event) => setJournalDate(event.target.value)}
+                              placeholder="ДД.ММ.ГГГГ"
+                              className="journal__input"
                             />
-                            <div className="assistant__actions-row">
-                              <Button variant="primary" onClick={saveEditEntry}>
-                                Сохранить
-                              </Button>
-                              <Button variant="ghost" onClick={() => setEditingEntryId(null)}>
-                                Отмена
-                              </Button>
-                            </div>
                           </div>
-                        ) : (
-                          <>
-                            <p className="assistant__meta">
-                              {entry.date} • {entry.entryType} • {plots.find((plot) => plot.id === entry.plotId)?.name}
-                            </p>
-                            <h3 className="assistant__title">{entry.culture}</h3>
-                            {entry.notes && <p className="assistant__meta">{entry.notes}</p>}
-                            <div className="assistant__actions-row">
-                              <Button variant="chip" onClick={() => startEditEntry(entry)}>
-                                Редактировать
-                              </Button>
-                              <Button variant="chip" onClick={() => deleteEntry(entry.id)}>
-                                Удалить
-                              </Button>
-                            </div>
-                          </>
-                        )}
-                      </Card>
-                    ))}
-                    {journal.length === 0 && (
-                      <Card variant="glass">
-                        <p className="assistant__meta">Пока нет записей.</p>
-                      </Card>
-                    )}
+                          <div className="journal__input-group">
+                            <label className="journal__label">Тип</label>
+                            <Select
+                              value={journalType}
+                              onChange={(event) => setJournalType(event.target.value as JournalType)}
+                              className="journal__select"
+                            >
+                              <option value="посадка">🌱 Посадка</option>
+                              <option value="уход">🌿 Уход</option>
+                              <option value="сбор">🧺 Сбор</option>
+                              <option value="заметка">📝 Заметка</option>
+                            </Select>
+                          </div>
+                          <div className="journal__input-group">
+                            <label className="journal__label">Культура</label>
+                            <Input
+                              value={journalCulture}
+                              onChange={(event) => setJournalCulture(event.target.value)}
+                              placeholder="Например, Помидоры"
+                              className="journal__input"
+                            />
+                          </div>
+                        </div>
+                        <div className="journal__form-row">
+                          <div className="journal__input-group journal__input-group--full">
+                            <label className="journal__label">Заметка</label>
+                            <Input
+                              value={journalNotes}
+                              onChange={(event) => setJournalNotes(event.target.value)}
+                              placeholder="Что сделали в саду?"
+                              className="journal__input"
+                            />
+                          </div>
+                          <Button variant="primary" onClick={addJournalEntry} className="journal__add-button">
+                            Добавить
+                          </Button>
+                        </div>
+                      </div>
+                    </Card>
+
+                    <div className="journal__timeline">
+                      {journal.length === 0 ? (
+                        <Card variant="glass" className="journal__empty">
+                          <div className="journal__empty-icon">🌱</div>
+                          <h3 className="journal__empty-title">Начните свой садовый журнал</h3>
+                          <p className="journal__empty-text">Записывайте свои посадки, уход и сбор урожая</p>
+                        </Card>
+                      ) : (
+                        journal.slice(0, 5).map((entry) => (
+                          <Card key={entry.id} variant="glass" className="journal__entry">
+                            {editingEntryId === entry.id ? (
+                              <div className="journal__edit">
+                                <div className="journal__edit-header">
+                                  <div className="journal__edit-row">
+                                    <Input
+                                      value={editDate}
+                                      onChange={(event) => setEditDate(event.target.value)}
+                                      placeholder="ДД.ММ.ГГГГ"
+                                      className="journal__edit-input"
+                                    />
+                                    <Select
+                                      value={editType}
+                                      onChange={(event) => setEditType(event.target.value as JournalType)}
+                                      className="journal__edit-select"
+                                    >
+                                      <option value="посадка">🌱 Посадка</option>
+                                      <option value="уход">🌿 Уход</option>
+                                      <option value="сбор">🧺 Сбор</option>
+                                      <option value="заметка">📝 Заметка</option>
+                                    </Select>
+                                    <Input
+                                      value={editCulture}
+                                      onChange={(event) => setEditCulture(event.target.value)}
+                                      placeholder="Культура"
+                                      className="journal__edit-input"
+                                    />
+                                  </div>
+                                  <Input
+                                    value={editNotes}
+                                    onChange={(event) => setEditNotes(event.target.value)}
+                                    placeholder="Заметка"
+                                    className="journal__edit-input journal__edit-input--full"
+                                  />
+                                  <div className="journal__edit-actions">
+                                    <Button variant="primary" onClick={saveEditEntry} className="journal__edit-save">
+                                      Сохранить
+                                    </Button>
+                                    <Button variant="ghost" onClick={() => setEditingEntryId(null)} className="journal__edit-cancel">
+                                      Отмена
+                                    </Button>
+                                  </div>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="journal__content">
+                                <div className="journal__entry-header">
+                                  <div className="journal__entry-type">
+                                    <span className={`journal__entry-icon journal__entry-icon--${entry.entryType}`}>
+                                      {entry.entryType === 'посадка' && '🌱'}
+                                      {entry.entryType === 'уход' && '🌿'}
+                                      {entry.entryType === 'сбор' && '🧺'}
+                                      {entry.entryType === 'заметка' && '📝'}
+                                    </span>
+                                    <span className="journal__entry-type-text">{entry.entryType}</span>
+                                  </div>
+                                  <div className="journal__entry-meta">
+                                    <span className="journal__entry-date">{entry.date}</span>
+                                    <span className="journal__entry-plot">{plots.find((plot) => plot.id === entry.plotId)?.name}</span>
+                                  </div>
+                                </div>
+                                <h3 className="journal__entry-title">{entry.culture}</h3>
+                                {entry.notes && <p className="journal__entry-notes">{entry.notes}</p>}
+                                <div className="journal__entry-actions">
+                                  <Button variant="chip" onClick={() => startEditEntry(entry)} className="journal__edit-button">
+                                    Редактировать
+                                  </Button>
+                                  <Button variant="chip" onClick={() => deleteEntry(entry.id)} className="journal__delete-button">
+                                    Удалить
+                                  </Button>
+                                </div>
+                              </div>
+                            )}
+                          </Card>
+                        ))
+                      )}
+                    </div>
                   </div>
                 </Section>
               </Section>
