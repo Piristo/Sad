@@ -1,4 +1,4 @@
-﻿import type { FC } from 'react';
+import type { FC } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect, useMemo, useCallback } from 'react';
 
@@ -15,6 +15,11 @@ export const TabbarMenu: FC = () => {
         id: 1,
         text: 'Главная',
         path: ROUTES.ENTER,
+      },
+      {
+        id: 3,
+        text: 'Ассистент',
+        path: ROUTES.CHAT,
       },
       {
         id: 2,

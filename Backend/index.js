@@ -78,7 +78,42 @@ app.post('/api/enter', async (req, res) => {
 
 
 
- async function createNewUser(tlgid) {
+// Chat endpoint
+app.post('/api/chat', async (req, res) => {
+  try {
+    const { message } = req.body;
+    
+    if (!message) {
+      return res.status(400).json({ error: 'Message is required' });
+    }
+
+    // Check if API key is configured
+    if (!process.env.OPENAI_API_KEY) {
+      // Mock response if no key
+      return res.json({ 
+        reply: `[MOCK MODE] Я получил ваше сообщение: "${message}". Чтобы я мог отвечать по-настоящему, добавьте OPENAI_API_KEY в .env файл на сервере.` 
+      });
+    }
+
+    const completion = await openai.chat.completions.create({
+      messages: [
+        { role: "system", content: "Ты - умный агроном-помощник. Твоя задача - помогать пользователям с вопросами по садоводству, огороду, уходу за растениями. Давай краткие, точные и полезные советы. Используй дружелюбный тон." },
+        { role: "user", content: message }
+      ],
+      model: "gpt-3.5-turbo",
+    });
+
+    return res.json({ 
+      reply: completion.choices[0].message.content 
+    });
+
+  } catch (err) {
+    console.error('Chat API Error:', err);
+    return res.status(500).json({ error: 'Failed to process chat message' });
+  }
+});
+
+async function createNewUser(tlgid) {
   try {
     const doc = new UserModel({
       tlgid: tlgid,
