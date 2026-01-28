@@ -568,11 +568,7 @@ export const IndexPage: FC = () => {
       .filter((item): item is CultureItem => Boolean(item));
   }, [selectedCultures, cultureMap]);
 
-  const activePlotCultureItems = useMemo(() => {
-    const ids = plotCultures[activePlotId];
-    if (!Array.isArray(ids)) return [];
-    return ids.map((id) => cultureMap.get(id)).filter((item): item is CultureItem => Boolean(item));
-  }, [plotCultures, activePlotId, cultureMap]);
+
 
   const calendarCultureItems = useMemo(() => {
     const ids = plotCultures[calendarPlotId];
@@ -580,9 +576,7 @@ export const IndexPage: FC = () => {
     return ids.map((id) => cultureMap.get(id)).filter((item): item is CultureItem => Boolean(item));
   }, [plotCultures, calendarPlotId, cultureMap]);
 
-  const todayCultureItems = activePlotCultureItems.length > 0
-    ? activePlotCultureItems
-    : selectedCultureItems;
+
 
   const selectedTaskItems = useMemo(() => {
     return TASKS.filter((task) => selectedTasks.includes(task.id));
