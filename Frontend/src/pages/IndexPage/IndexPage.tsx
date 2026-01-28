@@ -319,7 +319,7 @@ function loadPlots(): PlotProfile[] {
   try {
     const raw = localStorage.getItem(PLOTS_STORAGE_KEY);
     const parsed = raw ? (JSON.parse(raw) as PlotProfile[]) : DEFAULT_PLOTS;
-    return parsed.length ? parsed : DEFAULT_PLOTS;
+    return Array.isArray(parsed) && parsed.length ? parsed : DEFAULT_PLOTS;
   } catch {
     return DEFAULT_PLOTS;
   }
@@ -577,12 +577,14 @@ export const IndexPage: FC = () => {
   }, [selectedCultures, cultureMap]);
 
   const activePlotCultureItems = useMemo(() => {
-    const ids = plotCultures[activePlotId] ?? [];
+    const ids = plotCultures[activePlotId];
+    if (!Array.isArray(ids)) return [];
     return ids.map((id) => cultureMap.get(id)).filter((item): item is CultureItem => Boolean(item));
   }, [plotCultures, activePlotId, cultureMap]);
 
   const calendarCultureItems = useMemo(() => {
-    const ids = plotCultures[calendarPlotId] ?? [];
+    const ids = plotCultures[calendarPlotId];
+    if (!Array.isArray(ids)) return [];
     return ids.map((id) => cultureMap.get(id)).filter((item): item is CultureItem => Boolean(item));
   }, [plotCultures, calendarPlotId, cultureMap]);
 

@@ -95,7 +95,7 @@ export const WeatherWidget: FC = () => {
         </div>
       </div>
 
-      {weather.recommendations.length > 0 && (
+      {weather.recommendations && weather.recommendations.length > 0 && (
         <div className="weather-widget__recommendations">
           {weather.recommendations.map((rec, idx) => (
             <p key={idx} className="weather-widget__rec">{rec}</p>
@@ -104,7 +104,7 @@ export const WeatherWidget: FC = () => {
       )}
 
       <div className="weather-widget__forecast">
-        {weather.forecast.map((day, idx) => (
+        {weather.forecast && weather.forecast.map((day, idx) => (
           <div key={idx} className="weather-widget__forecast-day">
             <span className="weather-widget__day-name">{day.day}</span>
             <img 
