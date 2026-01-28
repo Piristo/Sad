@@ -13,7 +13,7 @@ interface Message {
 
 export const ChatPage: FC = () => {
   const [messages, setMessages] = useState<Message[]>([
-    { id: 1, text: 'РџСЂРёРІРµС‚! РЇ РІР°С€ AI-Р°РіСЂРѕРЅРѕРј. Р§РµРј РјРѕРіСѓ РїРѕРјРѕС‡СЊ?', sender: 'assistant' }
+    { id: 1, text: 'Привет! Я ваш AI-агроном. Чем могу помочь?', sender: 'assistant' }
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -41,7 +41,6 @@ export const ChatPage: FC = () => {
     setIsLoading(true);
 
     try {
-      // Use relative path for Cloudflare Functions
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
@@ -51,10 +50,10 @@ export const ChatPage: FC = () => {
       });
 
       const data = await response.json();
-      
+
       const botMessage: Message = {
         id: Date.now() + 1,
-        text: data.reply || 'РР·РІРёРЅРёС‚Рµ, СЏ СЃРµР№С‡Р°СЃ РЅРµ РјРѕРіСѓ РѕС‚РІРµС‚РёС‚СЊ.',
+        text: data.reply || 'Извините, я сейчас не могу ответить.',
         sender: 'assistant',
       };
 
@@ -63,7 +62,7 @@ export const ChatPage: FC = () => {
       console.error('Error sending message:', error);
       const errorMessage: Message = {
         id: Date.now() + 1,
-        text: 'РћС€РёР±РєР° СЃРІСЏР·Рё СЃ СЃРµСЂРІРµСЂРѕРј.',
+        text: 'Ошибка связи с сервером.',
         sender: 'assistant',
       };
       setMessages((prev) => [...prev, errorMessage]);
@@ -87,7 +86,7 @@ export const ChatPage: FC = () => {
               {msg.text}
             </div>
           ))}
-          {isLoading && <div className="message assistant">РџРµС‡Р°С‚Р°РµС‚...</div>}
+          {isLoading && <div className="message assistant">Печатает...</div>}
           <div ref={messagesEndRef} />
         </div>
 
@@ -95,14 +94,14 @@ export const ChatPage: FC = () => {
           <input
             type="text"
             className="chat-input"
-            placeholder="РЎРїСЂРѕСЃРёС‚Рµ РїСЂРѕ СЂР°СЃС‚РµРЅРёСЏ..."
+            placeholder="Спросите про растения..."
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={handleKeyPress}
             disabled={isLoading}
           />
-          <Button 
-            className="chat-send-btn" 
+          <Button
+            className="chat-send-btn"
             onClick={handleSendMessage}
             disabled={isLoading}
           >
