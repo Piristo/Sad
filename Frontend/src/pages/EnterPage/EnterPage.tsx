@@ -14,7 +14,10 @@ export const EnterPage: FC = () => {
 
   useEffect(() => {
     if (!tlgid) {
-      return;
+      const timer = window.setTimeout(() => {
+        navigate('/index');
+      }, 2000);
+      return () => window.clearTimeout(timer);
     }
 
     const fetchEnter = async () => {
@@ -23,6 +26,8 @@ export const EnterPage: FC = () => {
 
         if (!response || response.data.statusBE === 'notOk') {
           setIsLoading(false);
+          navigate('/index');
+          return;
         }
 
         const { result } = response.data.userData || {};
@@ -31,9 +36,12 @@ export const EnterPage: FC = () => {
           navigate('/onboarding');
         } else if (result === 'showIndexPage') {
           navigate('/index');
+        } else {
+          navigate('/index');
         }
       } catch (error) {
         setIsLoading(false);
+        navigate('/index');
       }
     };
     fetchEnter();
