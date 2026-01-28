@@ -1,8 +1,8 @@
 :root {
   /* Colors */
-  --primary: #9df074;
-  --primary-hover: #8ce063;
-  --primary-glow: rgba(157, 240, 116, 0.5);
+  --primary: #7bc463;
+  --primary-hover: #6abf55;
+  --primary-glow: rgba(123, 196, 99, 0.4);
   
   --bg-primary: #0b1410;
   --bg-secondary: #122018;
