@@ -141,7 +141,7 @@
   flex: 1;
   padding: 12px 16px;
   border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-light);
   background: rgba(0, 0, 0, 0.2);
   color: var(--tg-theme-text-color, #fff);
   font-size: 15px;
@@ -150,7 +150,7 @@
 }
 
 .chat-input:focus {
-  border-color: #3fae52;
+  border-color: var(--border-focus);
 }
 
 .chat-input::placeholder {
@@ -169,6 +169,7 @@
   color: white !important;
   font-size: 18px !important;
   transition: transform 0.1s !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
 }
 
 .chat-send-btn:active {
