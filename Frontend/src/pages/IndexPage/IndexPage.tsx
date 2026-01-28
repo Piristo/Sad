@@ -1013,7 +1013,11 @@ export const IndexPage: FC = () => {
 
         {flow === 'home' && (
           <Section>
-            <WeatherWidget />
+            <WeatherWidget 
+              currentTime={currentTime}
+              lunarPhase={phaseLabel(activeContext.phase)}
+              zodiacSign={activeContext.zodiac}
+            />
             <Card className="assistant__hero-card" variant="accent">
               <div className="assistant__hero">
                 <div className="assistant__hero-content">
@@ -1045,7 +1049,7 @@ export const IndexPage: FC = () => {
                   setFlow('plan');
                 }}
               >
-                Планировать посадки
+                🌱 Планировать посадки
               </Button>
               <Button
                 variant="secondary"
@@ -1054,7 +1058,7 @@ export const IndexPage: FC = () => {
                   setFlow('care');
                 }}
               >
-                Уход и работы в огороде
+                🛠️ Уход и работы
               </Button>
               <Button
                 variant="secondary"
@@ -1062,7 +1066,7 @@ export const IndexPage: FC = () => {
                   setFlow('feeding');
                 }}
               >
-                Подкормка после высадки
+                💧 Подкормка
               </Button>
               <Button
                 variant="secondary"
@@ -1070,16 +1074,9 @@ export const IndexPage: FC = () => {
                   setFlow('orchard');
                 }}
               >
-                Сад
+                🌳 Сад
               </Button>
             </div>
-
-            <Section title="Время" hint={DEFAULT_TIMEZONE}>
-              <Card variant="glass">
-                <p className="assistant__meta">Сейчас</p>
-                <p className="assistant__weather-temp">{currentTime || '—:—'}</p>
-              </Card>
-            </Section>
 
             <Section title="Журнал посадок и работ" hint="Быстрые заметки">
               <Card variant="glass">
