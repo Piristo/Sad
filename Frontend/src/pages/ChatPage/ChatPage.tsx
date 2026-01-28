@@ -2,7 +2,6 @@ import type { FC } from 'react';
 import { useState, useRef, useEffect } from 'react';
 import { Page } from '@/components/Page';
 import { Button } from '@/components/ui';
-import { TabbarMenu } from '@/components/TabbarMenu/TabbarMenu';
 import './ChatPage.css';
 
 interface Message {
