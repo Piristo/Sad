@@ -1,0 +1,45 @@
+:root {
+  /* Backgrounds */
+  --bg-primary: #0F1115;
+  --bg-secondary: #181B21;
+  --bg-glass: rgba(255, 255, 255, 0.03);
+  --bg-glass-heavy: rgba(255, 255, 255, 0.08);
+  --bg-input: rgba(0, 0, 0, 0.2);
+  
+  /* Accents */
+  --primary: #D4F468;
+  --primary-hover: #C3E857;
+  --primary-text: #1A2005;
+  --primary-glow: rgba(212, 244, 104, 0.15);
+  
+  /* Text */
+  --text-main: #FFFFFF;
+  --text-secondary: #9CA3AF;
+  --text-tertiary: #6B7280;
+  --text-inverse: #0F1115;
+  
+  /* Status */
+  --success: #4ADE80;
+  --warning: #FACC15;
+  --error: #F87171;
+  
+  /* Borders & Effects */
+  --border-glass: rgba(255, 255, 255, 0.08);
+  --border-focus: rgba(212, 244, 104, 0.5);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  --shadow-glow: 0 0 20px rgba(212, 244, 104, 0.1);
+  --blur-sm: 8px;
+  --blur-md: 12px;
+  --blur-lg: 20px;
+  
+  /* Spacing & Radius */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-full: 9999px;
+  
+  /* Typography */
+  --font-main: 'Manrope', system-ui, -apple-system, sans-serif;
+  --font-display: 'Playfair Display', serif;
+}
