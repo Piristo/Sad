@@ -1,5 +1,6 @@
 import type { FC, ChangeEvent } from 'react';
 import { useMemo, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { Page } from '@/components/Page.tsx';
 import { Button, Card, Input, Section, Select } from '@/components/ui';
@@ -1003,6 +1004,13 @@ export const IndexPage: FC = () => {
             <div className="assistant__cta">
               <Button
                 variant="primary"
+                className="assistant__cta-ai"
+                onClick={() => navigate('/chat')}
+              >
+                🤖 AI Агроном
+              </Button>
+              <Button
+                variant="secondary"
                 onClick={() => {
                   setPlanStep(0);
                   setFlow('plan');
