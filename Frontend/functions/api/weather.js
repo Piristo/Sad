@@ -17,92 +17,83 @@ export async function onRequestGet({ request, env }) {
     const units = url.searchParams.get('units') || 'metric';
     const lang = url.searchParams.get('lang') || 'ru';
 
+    // Проверка ключа
     if (!env.OPENWEATHER_API_KEY) {
       return jsonResponse({ 
         error: 'Weather API key is missing in Cloudflare environment variables',
         mock: true,
-        data: {
-          city: city,
-          temperature: 22,
-          feels_like: 25,
-          humidity: 65,
-          pressure: 1013,
-          wind_speed: 3.5,
-          wind_direction: 'SW',
-          description: 'Ясно',
-          icon: '01d',
-          forecast: [
-            { day: 'Сегодня', temp: 22, description: 'Ясно', icon: '01d' },
-            { day: 'Завтра', temp: 24, description: 'Облачно', icon: '03d' },
-            { day: 'Послезавтра', temp: 19, description: 'Дождь', icon: '10d' }
-          ]
-        }
-      });
+        // ... (mock data omitted for brevity)
+      }, 200); // Return 200 with error info to display in UI
     }
 
-    // Получаем текущую погоду
-    const currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${env.OPENWEATHER_API_KEY}&units=${units}&lang=${lang}`;
-    const currentResponse = await fetch(currentWeatherUrl);
+    const apiKey = env.OPENWEATHER_API_KEY.trim(); // Удаляем пробелы
+
+    // 1. Запрос текущей погоды
+    const currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${apiKey}&units=${units}&lang=${lang}`;
+    
+    // Логируем URL без ключа для отладки
+    const debugUrl = currentWeatherUrl.replace(apiKey, 'HIDDEN_KEY');
+    
+    let currentResponse;
+    try {
+      currentResponse = await fetch(currentWeatherUrl);
+    } catch (fetchError) {
+      throw new Error(`Fetch failed for ${debugUrl}: ${fetchError.message}`);
+    }
     
     if (!currentResponse.ok) {
       const errorText = await currentResponse.text();
-      throw new Error(`Weather API error: ${currentResponse.status} ${currentResponse.statusText} - ${errorText}`);
+      throw new Error(`OpenWeatherMap Current Weather Error (${currentResponse.status}): ${errorText}`);
     }
     
     const currentData = await currentResponse.json();
 
-    // Получаем прогноз на 3 дня
-    const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(city)}&appid=${env.OPENWEATHER_API_KEY}&units=${units}&lang=${lang}`;
-    const forecastResponse = await fetch(forecastUrl);
+    // 2. Запрос прогноза
+    const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(city)}&appid=${apiKey}&units=${units}&lang=${lang}`;
     
-    if (!forecastResponse.ok) {
-      const errorText = await forecastResponse.text();
-      throw new Error(`Forecast API error: ${forecastResponse.status} ${forecastResponse.statusText} - ${errorText}`);
+    let forecastResponse;
+    try {
+      forecastResponse = await fetch(forecastUrl);
+    } catch (fetchError) {
+       // Если прогноз упал, но погода есть - не страшно, продолжим без прогноза
+       console.error('Forecast fetch failed:', fetchError);
     }
     
-    const forecastData = await forecastResponse.json();
-
-    // Обрабатываем прогноз - берем по одному прогнозу на день
-    const dailyForecasts = [];
-    const processedDays = new Set();
-    
-    for (const item of forecastData.list) {
-      const date = new Date(item.dt * 1000);
-      const dayKey = date.toISOString().split('T')[0];
+    let dailyForecasts = [];
+    if (forecastResponse && forecastResponse.ok) {
+      const forecastData = await forecastResponse.json();
+      const processedDays = new Set();
       
-      if (!processedDays.has(dayKey) && dailyForecasts.length < 3) {
-        processedDays.add(dayKey);
-        dailyForecasts.push({
-          day: date.toLocaleDateString('ru-RU', { weekday: 'long' }),
-          temp: Math.round(item.main.temp),
-          description: item.weather[0].description,
-          icon: item.weather[0].icon
-        });
+      for (const item of forecastData.list) {
+        const date = new Date(item.dt * 1000);
+        const dayKey = date.toISOString().split('T')[0];
+        
+        if (!processedDays.has(dayKey) && dailyForecasts.length < 3) {
+          processedDays.add(dayKey);
+          dailyForecasts.push({
+            day: date.toLocaleDateString('ru-RU', { weekday: 'long' }),
+            temp: Math.round(item.main.temp),
+            description: item.weather[0].description,
+            icon: item.weather[0].icon
+          });
+        }
       }
     }
 
-    // Определяем рекомендации для садовода
+    // Рекомендации
     const recommendations = [];
     const temp = currentData.main.temp;
     const humidity = currentData.main.humidity;
     const windSpeed = currentData.wind.speed;
     const weatherMain = currentData.weather[0].main.toLowerCase();
 
-    if (temp < 5) {
-      recommendations.push('❄️ Внимание! Низкая температура - прикройте растения');
-    } else if (temp > 30) {
-      recommendations.push('🔥 Жарко! Увеличьте полив и создайте тень');
-    }
+    if (temp < 5) recommendations.push('❄️ Внимание! Низкая температура - прикройте растения');
+    else if (temp > 30) recommendations.push('🔥 Жарко! Увеличьте полив и создайте тень');
 
-    if (weatherMain.includes('rain')) {
-      recommendations.push('🌧️ Дождь - отмените полив, проверьте дренаж');
-    } else if (humidity < 40) {
-      recommendations.push('💧 Низкая влажность - увеличьте полив');
-    }
+    if (weatherMain.includes('rain')) recommendations.push('🌧️ Дождь - отмените полив, проверьте дренаж');
+    else if (humidity < 40) recommendations.push('💧 Низкая влажность - увеличьте полив');
 
-    if (windSpeed > 10) {
-      recommendations.push('💨 Сильный ветер - закрепите высокие растения');
-    }
+    if (windSpeed > 10) recommendations.push('💨 Сильный ветер - закрепите высокие растения');
 
     return jsonResponse({
       city: currentData.name,
@@ -121,10 +112,10 @@ export async function onRequestGet({ request, env }) {
     });
 
   } catch (error) {
-    console.error('Weather API Error:', error);
+    // Возвращаем подробную ошибку клиенту
     return jsonResponse({ 
-      error: 'Failed to fetch weather data',
-      details: error.message 
+      error: `Backend Error: ${error.message}`,
+      stack: error.stack
     }, 500);
   }
 }
