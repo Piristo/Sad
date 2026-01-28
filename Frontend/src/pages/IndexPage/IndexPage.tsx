@@ -11,7 +11,6 @@ import {
   DEFAULT_REGION,
   DEFAULT_TIMEZONE,
   TASKS,
-  ZODIAC_SIGNS,
 } from '@/assistant/data';
 import { resolveCultureDetail } from '@/assistant/cultureDetails';
 import {
@@ -31,7 +30,6 @@ import type {
   CultureGroupId,
   CultureItem,
   CultureType,
-  LunarContext,
   TaskId,
 } from '@/assistant/types';
 
@@ -42,13 +40,6 @@ const PLOT_TYPES = [
   { id: 'greenhouse', title: 'Теплица' },
   { id: 'indoor', title: 'Комнатные растения' },
 ] as const;
-
-const PHASES: { id: LunarContext['phase']; title: string }[] = [
-  { id: 'new', title: 'Новолуние' },
-  { id: 'waxing', title: 'Растущая' },
-  { id: 'full', title: 'Полнолуние' },
-  { id: 'waning', title: 'Убывающая' },
-];
 
 const CULTURE_TYPES: { id: CultureType; title: string }[] = [
   { id: 'root', title: 'Корнеплод' },
@@ -396,9 +387,7 @@ export const IndexPage: FC = () => {
   const [orchardScheduleId, setOrchardScheduleId] = useState('apple-tree');
   const [orchardTab, setOrchardTab] = useState<'overview' | 'schedule'>('overview');
 
-  const [manualMode, setManualMode] = useState(false);
-  const [lunarContext, setLunarContext] = useState<LunarContext>(autoContext);
-  const activeContext = manualMode ? lunarContext : autoContext;
+  const activeContext = autoContext;
 
   const initialJournal = useMemo(() => loadJournal(), []);
   const [journal, setJournal] = useState<JournalEntry[]>(initialJournal);
@@ -616,11 +605,6 @@ export const IndexPage: FC = () => {
   const cultureDetails = useMemo(() => {
     return selectedCultureItems.map((item) => resolveCultureDetail(item));
   }, [selectedCultureItems]);
-
-  const todayPlotAssessments = useMemo(() => {
-    if (!todayCultureItems.length) return [];
-    return assessCultures(todayCultureItems, activeContext, today);
-  }, [todayCultureItems, activeContext, today]);
 
   const wateringSchedules = useMemo(() => {
     return selectedCultureItems.map((item) => ({
@@ -950,14 +934,6 @@ export const IndexPage: FC = () => {
     setPlots((prev) => [...prev, nextPlot]);
     setActivePlotId(id);
     setNewPlotName('');
-  };
-
-  const handleManualToggle = (event: ChangeEvent<HTMLInputElement>) => {
-    const { checked } = event.target;
-    setManualMode(checked);
-    if (checked) {
-      setLunarContext(autoContext);
-    }
   };
 
   function parseInputDate(value: string): Date | null {
