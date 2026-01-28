@@ -66,26 +66,22 @@ export class WeatherService {
         return cached.data;
       }
       
-      // Возвращаем данные-заглушку
+      // Возвращаем объект с ошибкой для отображения в UI
       return {
         city: city,
-        country: 'RU',
-        temperature: 20,
-        feels_like: 22,
-        humidity: 60,
-        pressure: 1013,
-        wind_speed: 3,
-        wind_direction: 180,
-        description: 'Облачно',
-        icon: '03d',
-        forecast: [
-          { day: 'Сегодня', temp: 20, description: 'Облачно', icon: '03d' },
-          { day: 'Завтра', temp: 22, description: 'Ясно', icon: '01d' },
-          { day: 'Послезавтра', temp: 18, description: 'Дождь', icon: '10d' }
-        ],
-        recommendations: ['Не удалось загрузить погоду - используйте данные-заглушку'],
+        country: '',
+        temperature: 0,
+        feels_like: 0,
+        humidity: 0,
+        pressure: 0,
+        wind_speed: 0,
+        wind_direction: 0,
+        description: 'Ошибка загрузки',
+        icon: '01d',
+        forecast: [],
+        recommendations: [`Ошибка: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`],
         updated_at: Date.now(),
-        error: 'Failed to fetch weather data'
+        error: error instanceof Error ? error.message : 'Unknown error'
       };
     }
   }

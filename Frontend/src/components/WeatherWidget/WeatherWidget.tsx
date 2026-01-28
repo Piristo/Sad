@@ -41,6 +41,37 @@ export const WeatherWidget: FC = () => {
 
   if (!weather) return null;
 
+  if (weather.error) {
+    return (
+      <Card variant="glass" className="weather-widget weather-widget--error">
+        <div className="weather-widget__header">
+          <div className="weather-widget__location" onClick={() => {
+            setNewCity(city);
+            setIsEditing(true);
+          }}>
+            <span className="weather-widget__city">{weather.city}</span>
+            <span className="weather-widget__edit-icon">✎</span>
+          </div>
+        </div>
+        <div className="weather-widget__error-msg">
+          ⚠️ {weather.recommendations[0] || weather.error}
+        </div>
+        {isEditing && (
+          <div className="weather-widget__city-edit">
+            <Input 
+              value={newCity}
+              onChange={(e) => setNewCity(e.target.value)}
+              placeholder="Введите город"
+              autoFocus
+            />
+            <Button variant="chip" onClick={handleCitySubmit}>OK</Button>
+            <Button variant="chip" onClick={() => setIsEditing(false)}>✕</Button>
+          </div>
+        )}
+      </Card>
+    );
+  }
+
   return (
     <Card variant="glass" className="weather-widget">
       <div className="weather-widget__header">

@@ -19,7 +19,7 @@ export async function onRequestGet({ request, env }) {
 
     if (!env.OPENWEATHER_API_KEY) {
       return jsonResponse({ 
-        error: 'Weather API key not configured',
+        error: 'Weather API key is missing in Cloudflare environment variables',
         mock: true,
         data: {
           city: city,
@@ -45,7 +45,8 @@ export async function onRequestGet({ request, env }) {
     const currentResponse = await fetch(currentWeatherUrl);
     
     if (!currentResponse.ok) {
-      throw new Error(`Weather API error: ${currentResponse.status}`);
+      const errorText = await currentResponse.text();
+      throw new Error(`Weather API error: ${currentResponse.status} ${currentResponse.statusText} - ${errorText}`);
     }
     
     const currentData = await currentResponse.json();
@@ -55,7 +56,8 @@ export async function onRequestGet({ request, env }) {
     const forecastResponse = await fetch(forecastUrl);
     
     if (!forecastResponse.ok) {
-      throw new Error(`Forecast API error: ${forecastResponse.status}`);
+      const errorText = await forecastResponse.text();
+      throw new Error(`Forecast API error: ${forecastResponse.status} ${forecastResponse.statusText} - ${errorText}`);
     }
     
     const forecastData = await forecastResponse.json();
