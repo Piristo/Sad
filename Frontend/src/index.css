@@ -1,8 +1,8 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&family=Playfair+Display:wght@500;600;700&display=swap&subset=cyrillic');
 
 :root {
   color-scheme: dark;
-  font-family: "Plus Jakarta Sans", "Helvetica Neue", sans-serif;
+  font-family: "Manrope", "Helvetica Neue", sans-serif;
   background-color: #0b1410;
 }
 
@@ -280,3 +280,4 @@ body {
     animation: none !important;
   }
 }
+
