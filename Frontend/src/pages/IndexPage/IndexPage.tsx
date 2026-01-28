@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Page } from '@/components/Page.tsx';
 import { Button, Card, Input, Section, Select } from '@/components/ui';
 import { WeatherWidget } from '@/components/WeatherWidget';
+import { TabBar, TabId } from '@/components/TabBar/TabBar';
 import {
   CULTURE_GROUPS,
   DEFAULT_REGION,
@@ -362,6 +363,8 @@ export const IndexPage: FC = () => {
   const todayParts = useMemo(() => getZonedParts(new Date(), DEFAULT_TIMEZONE), []);
   const today = useMemo(() => zonedPartsToDate(todayParts), [todayParts]);
   const autoContext = useMemo(() => getLunarContext(today), [today]);
+  
+  const [activeTab, setActiveTab] = useState<TabId>('home');
   const [flow, setFlow] = useState<'home' | 'plan' | 'care' | 'feeding' | 'orchard'>('home');
   const [planStep, setPlanStep] = useState(0);
   const [careStep, setCareStep] = useState(0);
@@ -931,6 +934,7 @@ export const IndexPage: FC = () => {
 
     return days;
   }, [today, selectedCultureItems, selectedTaskItems]);
+
   const addPlot = () => {
     const name = newPlotName.trim();
     if (!name) return;
@@ -985,7 +989,7 @@ export const IndexPage: FC = () => {
 
   return (
     <Page back={false}>
-      <div className="assistant">
+      <div className="assistant" style={{ paddingBottom: '90px' }}>
         <header className="assistant__header">
           <div className="assistant__topline">
             <div className="assistant__brand">
@@ -1011,1016 +1015,386 @@ export const IndexPage: FC = () => {
           </p>
         </header>
 
-        {flow === 'home' && (
-          <Section>
-            <WeatherWidget 
-              currentTime={currentTime}
-              lunarPhase={phaseLabel(activeContext.phase)}
-              zodiacSign={activeContext.zodiac}
-            />
-            <Card className="assistant__hero-card" variant="accent">
-              <div className="assistant__hero">
-                <div className="assistant__hero-content">
-                  <span className="assistant__eyebrow">Начинаем посадки</span>
-                  <h2 className="assistant__hero-title">Лунный гид по растениям</h2>
-                  <p className="assistant__subtitle">
-                    Рекомендации по фазе Луны, знаку Зодиака и сезону.
-                  </p>
-                </div>
-                <div className="assistant__hero-media">
-                  <div className="assistant__plant" />
-                  <div className="assistant__pot" />
-                </div>
-              </div>
-            </Card>
-
-            <div className="assistant__cta">
-              <Button
-                variant="primary"
-                className="assistant__cta-ai"
-                onClick={() => navigate('/chat')}
-              >
-                🤖 AI Агроном
-              </Button>
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  setPlanStep(0);
-                  setFlow('plan');
-                }}
-              >
-                🌱 Планировать посадки
-              </Button>
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  setCareStep(0);
-                  setFlow('care');
-                }}
-              >
-                🛠️ Уход и работы
-              </Button>
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  setFlow('feeding');
-                }}
-              >
-                💧 Подкормка
-              </Button>
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  setFlow('orchard');
-                }}
-              >
-                🌳 Сад
-              </Button>
-            </div>
-
-            <Section title="Журнал посадок и работ" hint="Быстрые заметки">
-              <Card variant="glass">
-                <div className="assistant__custom-row">
-                  <Input
-                    value={journalDate}
-                    onChange={(event) => setJournalDate(event.target.value)}
-                    placeholder="ДД.ММ.ГГГГ"
-                  />
-                  <Select
-                    value={journalType}
-                    onChange={(event) => setJournalType(event.target.value as JournalType)}
+        {activeTab === 'home' && (
+          <>
+            {flow === 'home' && (
+              <Section>
+                <WeatherWidget 
+                  currentTime={currentTime}
+                  lunarPhase={phaseLabel(activeContext.phase)}
+                  zodiacSign={activeContext.zodiac}
+                />
+                
+                <div className="assistant__grid" style={{ gridTemplateColumns: '1fr 1fr', gap: '12px', marginTop: '16px' }}>
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      setPlanStep(0);
+                      setFlow('plan');
+                    }}
+                    style={{ height: 'auto', padding: '16px', flexDirection: 'column', gap: '8px' }}
                   >
-                    <option value="посадка">Посадка</option>
-                    <option value="уход">Уход</option>
-                    <option value="сбор">Сбор</option>
-                    <option value="заметка">Заметка</option>
-                  </Select>
-                  <Input
-                    value={journalCulture}
-                    onChange={(event) => setJournalCulture(event.target.value)}
-                    placeholder="Культура"
-                  />
-                  <Button variant="secondary" onClick={addJournalEntry}>
-                    Добавить
+                    <span style={{ fontSize: '24px' }}>🌱</span>
+                    <span>Посадки</span>
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      setCareStep(0);
+                      setFlow('care');
+                    }}
+                    style={{ height: 'auto', padding: '16px', flexDirection: 'column', gap: '8px' }}
+                  >
+                    <span style={{ fontSize: '24px' }}>🛠️</span>
+                    <span>Уход</span>
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      setFlow('feeding');
+                    }}
+                    style={{ height: 'auto', padding: '16px', flexDirection: 'column', gap: '8px' }}
+                  >
+                    <span style={{ fontSize: '24px' }}>💧</span>
+                    <span>Подкормка</span>
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      setFlow('orchard');
+                    }}
+                    style={{ height: 'auto', padding: '16px', flexDirection: 'column', gap: '8px' }}
+                  >
+                    <span style={{ fontSize: '24px' }}>🌳</span>
+                    <span>Сад</span>
                   </Button>
                 </div>
-                <Input
-                  value={journalNotes}
-                  onChange={(event) => setJournalNotes(event.target.value)}
-                  placeholder="Короткая заметка"
-                />
-              </Card>
-              <div className="assistant__results">
-                {journal.slice(0, 6).map((entry) => (
-                  <Card key={entry.id} variant="glass">
-                    {editingEntryId === entry.id ? (
-                      <div className="assistant__edit">
-                        <div className="assistant__custom-row">
-                          <Input
-                            value={editDate}
-                            onChange={(event) => setEditDate(event.target.value)}
-                            placeholder="ДД.ММ.ГГГГ"
-                          />
-                          <Select
-                            value={editType}
-                            onChange={(event) => setEditType(event.target.value as JournalType)}
-                          >
-                            <option value="посадка">Посадка</option>
-                            <option value="уход">Уход</option>
-                            <option value="сбор">Сбор</option>
-                            <option value="заметка">Заметка</option>
-                          </Select>
-                          <Input
-                            value={editCulture}
-                            onChange={(event) => setEditCulture(event.target.value)}
-                            placeholder="Культура"
-                          />
-                        </div>
-                        <Input
-                          value={editNotes}
-                          onChange={(event) => setEditNotes(event.target.value)}
-                          placeholder="Заметка"
-                        />
-                        <div className="assistant__actions-row">
-                          <Button variant="primary" onClick={saveEditEntry}>
-                            Сохранить
-                          </Button>
-                          <Button variant="ghost" onClick={() => setEditingEntryId(null)}>
-                            Отмена
-                          </Button>
-                        </div>
-                      </div>
-                    ) : (
-                      <>
-                        <p className="assistant__meta">
-                          {entry.date} • {entry.entryType} • {plots.find((plot) => plot.id === entry.plotId)?.name}
-                        </p>
-                        <h3 className="assistant__title">{entry.culture}</h3>
-                        {entry.notes && <p className="assistant__meta">{entry.notes}</p>}
-                        <div className="assistant__actions-row">
-                          <Button variant="chip" onClick={() => startEditEntry(entry)}>
-                            Редактировать
-                          </Button>
-                          <Button variant="chip" onClick={() => deleteEntry(entry.id)}>
-                            Удалить
-                          </Button>
-                        </div>
-                      </>
-                    )}
-                  </Card>
-                ))}
-                {journal.length === 0 && (
-                  <Card variant="glass">
-                    <p className="assistant__meta">Пока нет записей.</p>
-                  </Card>
-                )}
-              </div>
-            </Section>
-          </Section>
-        )}
 
-        {flow === 'plan' && (
-          <>
-            <Section title="Шаг 1. Регион и участок">
-              <Card variant="glass">
-                <div className="assistant__custom-row">
-                  <div>
-                    <label className="assistant__label">Участки</label>
-                    <div className="assistant__chips">
-                      {plots.map((plot) => (
-                        <Button
-                          key={plot.id}
-                          variant={plot.id === activePlotId ? 'primary' : 'chip'}
-                          onClick={() => setActivePlotId(plot.id)}
-                        >
-                          {plot.name}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-                  <div>
-                    <label className="assistant__label">Добавить участок</label>
-                    <div className="assistant__chips">
+                <Section title="Журнал посадок и работ" hint="Быстрые заметки">
+                  <Card variant="glass">
+                    <div className="assistant__custom-row">
                       <Input
-                        value={newPlotName}
-                        onChange={(event) => setNewPlotName(event.target.value)}
-                        placeholder="Название участка"
+                        value={journalDate}
+                        onChange={(event) => setJournalDate(event.target.value)}
+                        placeholder="ДД.ММ.ГГГГ"
                       />
-                      <Button variant="secondary" onClick={addPlot}>
+                      <Select
+                        value={journalType}
+                        onChange={(event) => setJournalType(event.target.value as JournalType)}
+                      >
+                        <option value="посадка">Посадка</option>
+                        <option value="уход">Уход</option>
+                        <option value="сбор">Сбор</option>
+                        <option value="заметка">Заметка</option>
+                      </Select>
+                      <Input
+                        value={journalCulture}
+                        onChange={(event) => setJournalCulture(event.target.value)}
+                        placeholder="Культура"
+                      />
+                      <Button variant="secondary" onClick={addJournalEntry}>
                         Добавить
                       </Button>
                     </div>
-                  </div>
-                </div>
-                <div className="assistant__custom-row">
-                  <div>
-                    <label className="assistant__label">Регион</label>
                     <Input
-                      value={region}
-                      onChange={handleRegionChange}
-                      placeholder={DEFAULT_REGION}
+                      value={journalNotes}
+                      onChange={(event) => setJournalNotes(event.target.value)}
+                      placeholder="Короткая заметка"
                     />
-                  </div>
-                  <div>
-                    <label className="assistant__label">Тип участка</label>
-                    <div className="assistant__chips">
-                      {PLOT_TYPES.map((type) => (
-                        <Button
-                          key={type.id}
-                          variant={plotType === type.id ? 'primary' : 'chip'}
-                          onClick={() => handlePlotTypeChange(type.id)}
-                        >
-                          {type.title}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-                  <p className="assistant__meta">Часовой пояс: {DEFAULT_TIMEZONE}</p>
-                </div>
-              </Card>
-              <div className="assistant__cta">
-                <Button variant="primary" onClick={() => setPlanStep(1)}>
-                  Далее
-                </Button>
-                <Button variant="ghost" onClick={resetFlow}>
-                  На главный экран
-                </Button>
-              </div>
-            </Section>
-
-            {planStep >= 1 && (
-              <Section title="Шаг 2. Выберите культуры">
-                <Card variant="glass">
-                  {groupedCultures.map((group) => (
-                    <div key={group.id} className="assistant__group">
-                      <h3 className="assistant__title">{group.title}</h3>
-                      <div className="assistant__grid">
-                        {group.items.map((item) => (
-                          <label key={item.id} className="assistant__check">
-                            <input
-                              type="checkbox"
-                              checked={selectedCultures.includes(item.id)}
-                              onChange={() => toggleCulture(item.id)}
-                            />
-                            <span>{item.title}</span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </Card>
-
-                <Card variant="accent">
-                  <h3 className="assistant__title">Добавить свою культуру</h3>
-                  <div className="assistant__custom-row">
-                    <Input
-                      value={customName}
-                      onChange={(event) => setCustomName(event.target.value)}
-                      placeholder="Например, мята или розмарин"
-                    />
-                    <Select
-                      value={customType}
-                      onChange={(event) => setCustomType(event.target.value as CultureType)}
-                    >
-                      {CULTURE_TYPES.map((type) => (
-                        <option key={type.id} value={type.id}>
-                          {type.title}
-                        </option>
-                      ))}
-                    </Select>
-                    <Select
-                      value={customGroup}
-                      onChange={(event) => setCustomGroup(event.target.value as CultureGroupId)}
-                    >
-                      {Object.entries(GROUP_LABELS).map(([id, title]) => (
-                        <option key={id} value={id}>
-                          {title}
-                        </option>
-                      ))}
-                    </Select>
-                    <Button variant="secondary" onClick={addCustomCulture}>
-                      Добавить
-                    </Button>
-                  </div>
-                </Card>
-
-                <Card variant="glass">
-                  <h3 className="assistant__title">Закрепить культуры за участком</h3>
-                  <p className="assistant__meta">
-                    Сохраните список выбранных культур, чтобы строить календарь и быстрый обзор для участка
-                    «{activePlot?.name}».
-                  </p>
-                  <div className="assistant__actions-row">
-                    <Button
-                      variant="secondary"
-                      onClick={saveCulturesForPlot}
-                      disabled={selectedCultures.length === 0}
-                    >
-                      Сохранить для участка
-                    </Button>
-                    {plotCultures[activePlotId]?.length ? (
-                      <Button variant="ghost" onClick={clearCulturesForPlot}>
-                        Очистить
-                      </Button>
-                    ) : null}
-                  </div>
-                  {plotCultures[activePlotId]?.length ? (
-                    <p className="assistant__meta">
-                      Сейчас сохранено: {plotCultures[activePlotId].length} культур.
-                    </p>
-                  ) : (
-                    <p className="assistant__meta">
-                      Для участка пока нет сохранённых культур.
-                    </p>
-                  )}
-                </Card>
-
-                <div className="assistant__cta">
-                  <Button
-                    variant="primary"
-                    onClick={() => setPlanStep(2)}
-                    disabled={selectedCultures.length === 0}
-                  >
-                    Посмотреть рекомендации
-                  </Button>
-                  <Button variant="ghost" onClick={resetFlow}>
-                    На главный экран
-                  </Button>
-                </div>
-              </Section>
-            )}
-
-            {planStep >= 2 && (
-              <Section title="Рекомендации на сегодня">
-                <Card className="assistant__summary" variant="glass">
-                  <p>{summaryText}</p>
-                  <p>{seasonNote}</p>
-                </Card>
-
-                <Card variant="accent">
-                  <h3 className="assistant__title">Данные Луны</h3>
-                  <p className="assistant__meta">
-                    Авто: {phaseLabel(autoContext.phase)}, знак {autoContext.zodiac}
-                  </p>
-                  <label className="assistant__check">
-                    <input
-                      type="checkbox"
-                      checked={manualMode}
-                      onChange={handleManualToggle}
-                    />
-                    <span>Ручной режим (для тестов)</span>
-                  </label>
-                  {manualMode && (
-                    <div className="assistant__custom-row">
-                      <Select
-                        value={lunarContext.phase}
-                        onChange={(event) =>
-                          setLunarContext((prev) => ({
-                            ...prev,
-                            phase: event.target.value as LunarContext['phase'],
-                          }))
-                        }
-                      >
-                        {PHASES.map((phase) => (
-                          <option key={phase.id} value={phase.id}>
-                            {phase.title}
-                          </option>
-                        ))}
-                      </Select>
-                      <Select
-                        value={lunarContext.zodiac}
-                        onChange={(event) =>
-                          setLunarContext((prev) => ({
-                            ...prev,
-                            zodiac: event.target.value as LunarContext['zodiac'],
-                          }))
-                        }
-                      >
-                        {ZODIAC_SIGNS.map((sign) => (
-                          <option key={sign} value={sign}>
-                            {sign}
-                          </option>
-                        ))}
-                      </Select>
-                      <label className="assistant__check">
-                        <input
-                          type="checkbox"
-                          checked={lunarContext.isForbiddenWindow}
-                          onChange={(event) =>
-                            setLunarContext((prev) => ({
-                              ...prev,
-                              isForbiddenWindow: event.target.checked,
-                            }))
-                          }
-                        />
-                        <span>Неблагоприятное окно (±12 часов)</span>
-                      </label>
-                    </div>
-                  )}
-                </Card>
-
-                <div className="assistant__results">
-                  {planAssessments.map((item) => (
-                    <Card key={item.id} variant="glass">
-                      <h3 className="assistant__title">{item.title}</h3>
-                      <p
-                        className={`assistant__status assistant__status--${item.status}`}
-                      >
-                        {statusLabel(item.status)}
-                      </p>
-                      <p className="assistant__meta">{item.explanation}</p>
-                      <p className="assistant__meta">Тип: {cultureTypeLabel(item.type)}</p>
-                      {item.suggestedDates && (
-                        <p className="assistant__meta">
-                          Ближайшие даты: {item.suggestedDates.join(', ')}
-                        </p>
-                      )}
-                    </Card>
-                  ))}
-                </div>
-
-                <Section title="Быстрый просмотр: сегодня на участке" hint="Что можно сделать прямо сейчас">
-                  <Card variant="glass">
-                    <p className="assistant__meta">
-                      Участок: {activePlot?.name ?? 'Без названия'} • Культур в календаре: {todayCultureItems.length}
-                    </p>
-                    {activePlotCultureItems.length ? (
-                      <p className="assistant__meta">
-                        Используем сохранённые культуры для участка.
-                      </p>
-                    ) : (
-                      <p className="assistant__meta">
-                        Участок ещё не закреплён, используем текущий список выбора.
-                      </p>
-                    )}
                   </Card>
                   <div className="assistant__results">
-                    {todayPlotAssessments.map((item) => (
-                      <Card key={item.id} variant="glass">
-                        <h3 className="assistant__title">{item.title}</h3>
-                        <p className={`assistant__status assistant__status--${item.status}`}>
-                          {statusLabel(item.status)}
-                        </p>
-                        <p className="assistant__meta">{item.explanation}</p>
+                    {journal.slice(0, 3).map((entry) => (
+                      <Card key={entry.id} variant="glass">
+                        {editingEntryId === entry.id ? (
+                          <div className="assistant__edit">
+                            <div className="assistant__custom-row">
+                              <Input
+                                value={editDate}
+                                onChange={(event) => setEditDate(event.target.value)}
+                                placeholder="ДД.ММ.ГГГГ"
+                              />
+                              <Select
+                                value={editType}
+                                onChange={(event) => setEditType(event.target.value as JournalType)}
+                              >
+                                <option value="посадка">Посадка</option>
+                                <option value="уход">Уход</option>
+                                <option value="сбор">Сбор</option>
+                                <option value="заметка">Заметка</option>
+                              </Select>
+                              <Input
+                                value={editCulture}
+                                onChange={(event) => setEditCulture(event.target.value)}
+                                placeholder="Культура"
+                              />
+                            </div>
+                            <Input
+                              value={editNotes}
+                              onChange={(event) => setEditNotes(event.target.value)}
+                              placeholder="Заметка"
+                            />
+                            <div className="assistant__actions-row">
+                              <Button variant="primary" onClick={saveEditEntry}>
+                                Сохранить
+                              </Button>
+                              <Button variant="ghost" onClick={() => setEditingEntryId(null)}>
+                                Отмена
+                              </Button>
+                            </div>
+                          </div>
+                        ) : (
+                          <>
+                            <p className="assistant__meta">
+                              {entry.date} • {entry.entryType} • {plots.find((plot) => plot.id === entry.plotId)?.name}
+                            </p>
+                            <h3 className="assistant__title">{entry.culture}</h3>
+                            {entry.notes && <p className="assistant__meta">{entry.notes}</p>}
+                            <div className="assistant__actions-row">
+                              <Button variant="chip" onClick={() => startEditEntry(entry)}>
+                                Редактировать
+                              </Button>
+                              <Button variant="chip" onClick={() => deleteEntry(entry.id)}>
+                                Удалить
+                              </Button>
+                            </div>
+                          </>
+                        )}
                       </Card>
                     ))}
-                    {todayPlotAssessments.length === 0 && (
+                    {journal.length === 0 && (
                       <Card variant="glass">
-                        <p className="assistant__meta">Добавьте культуры, чтобы видеть быстрый обзор.</p>
+                        <p className="assistant__meta">Пока нет записей.</p>
                       </Card>
                     )}
                   </div>
                 </Section>
+              </Section>
+            )}
 
-                {cultureDetails.length > 0 && (
-                  <Section title="Карточки культур" hint="Быстрые подсказки по уходу">
-                    <div className="assistant__results">
-                      {cultureDetails.map((detail) => (
-                        <Card key={detail.id} variant="glass">
-                          <h3 className="assistant__title">{detail.title}</h3>
-                          <p className="assistant__meta">Полив: {detail.watering}</p>
-                          <p className="assistant__meta">Подкормка: {detail.feeding}</p>
-                          <p className="assistant__meta">Пересадка: {detail.transplant}</p>
-                          <p className="assistant__meta">Особенности: {detail.notes}</p>
-                        </Card>
+            {flow === 'plan' && (
+              <>
+                <Section title="Шаг 1. Регион и участок">
+                  <Card variant="glass">
+                    <div className="assistant__custom-row">
+                      <div>
+                        <label className="assistant__label">Участки</label>
+                        <div className="assistant__chips">
+                          {plots.map((plot) => (
+                            <Button
+                              key={plot.id}
+                              variant={plot.id === activePlotId ? 'primary' : 'chip'}
+                              onClick={() => setActivePlotId(plot.id)}
+                            >
+                              {plot.name}
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <label className="assistant__label">Добавить участок</label>
+                        <div className="assistant__chips">
+                          <Input
+                            value={newPlotName}
+                            onChange={(event) => setNewPlotName(event.target.value)}
+                            placeholder="Название участка"
+                          />
+                          <Button variant="secondary" onClick={addPlot}>
+                            Добавить
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="assistant__custom-row">
+                      <div>
+                        <label className="assistant__label">Регион</label>
+                        <Input
+                          value={region}
+                          onChange={handleRegionChange}
+                          placeholder={DEFAULT_REGION}
+                        />
+                      </div>
+                      <div>
+                        <label className="assistant__label">Тип участка</label>
+                        <div className="assistant__chips">
+                          {PLOT_TYPES.map((type) => (
+                            <Button
+                              key={type.id}
+                              variant={plotType === type.id ? 'primary' : 'chip'}
+                              onClick={() => handlePlotTypeChange(type.id)}
+                            >
+                              {type.title}
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
+                      <p className="assistant__meta">Часовой пояс: {DEFAULT_TIMEZONE}</p>
+                    </div>
+                  </Card>
+                  <div className="assistant__cta">
+                    <Button variant="primary" onClick={() => setPlanStep(1)}>
+                      Далее
+                    </Button>
+                    <Button variant="ghost" onClick={resetFlow}>
+                      На главный экран
+                    </Button>
+                  </div>
+                </Section>
+
+                {planStep >= 1 && (
+                  <Section title="Шаг 2. Выберите культуры">
+                    <Card variant="glass">
+                      {groupedCultures.map((group) => (
+                        <div key={group.id} className="assistant__group">
+                          <h3 className="assistant__title">{group.title}</h3>
+                          <div className="assistant__grid">
+                            {group.items.map((item) => (
+                              <label key={item.id} className="assistant__check">
+                                <input
+                                  type="checkbox"
+                                  checked={selectedCultures.includes(item.id)}
+                                  onChange={() => toggleCulture(item.id)}
+                                />
+                                <span>{item.title}</span>
+                              </label>
+                            ))}
+                          </div>
+                        </div>
                       ))}
+                    </Card>
+
+                    <Card variant="accent">
+                      <h3 className="assistant__title">Добавить свою культуру</h3>
+                      <div className="assistant__custom-row">
+                        <Input
+                          value={customName}
+                          onChange={(event) => setCustomName(event.target.value)}
+                          placeholder="Например, мята или розмарин"
+                        />
+                        <Select
+                          value={customType}
+                          onChange={(event) => setCustomType(event.target.value as CultureType)}
+                        >
+                          {CULTURE_TYPES.map((type) => (
+                            <option key={type.id} value={type.id}>
+                              {type.title}
+                            </option>
+                          ))}
+                        </Select>
+                        <Select
+                          value={customGroup}
+                          onChange={(event) => setCustomGroup(event.target.value as CultureGroupId)}
+                        >
+                          {Object.entries(GROUP_LABELS).map(([id, title]) => (
+                            <option key={id} value={id}>
+                              {title}
+                            </option>
+                          ))}
+                        </Select>
+                        <Button variant="secondary" onClick={addCustomCulture}>
+                          Добавить
+                        </Button>
+                      </div>
+                    </Card>
+
+                    <Card variant="glass">
+                      <h3 className="assistant__title">Закрепить культуры за участком</h3>
+                      <p className="assistant__meta">
+                        Сохраните список выбранных культур, чтобы строить календарь и быстрый обзор для участка
+                        «{activePlot?.name}».
+                      </p>
+                      <div className="assistant__actions-row">
+                        <Button
+                          variant="secondary"
+                          onClick={saveCulturesForPlot}
+                          disabled={selectedCultures.length === 0}
+                        >
+                          Сохранить для участка
+                        </Button>
+                        {plotCultures[activePlotId]?.length ? (
+                          <Button variant="ghost" onClick={clearCulturesForPlot}>
+                            Очистить
+                          </Button>
+                        ) : null}
+                      </div>
+                      {plotCultures[activePlotId]?.length ? (
+                        <p className="assistant__meta">
+                          Сейчас сохранено: {plotCultures[activePlotId].length} культур.
+                        </p>
+                      ) : (
+                        <p className="assistant__meta">
+                          Для участка пока нет сохранённых культур.
+                        </p>
+                      )}
+                    </Card>
+
+                    <div className="assistant__cta">
+                      <Button
+                        variant="primary"
+                        onClick={() => setPlanStep(2)}
+                        disabled={selectedCultures.length === 0}
+                      >
+                        Посмотреть рекомендации
+                      </Button>
+                      <Button variant="ghost" onClick={resetFlow}>
+                        На главный экран
+                      </Button>
                     </div>
                   </Section>
                 )}
 
-                <Section title="График полива по фазам роста">
-                  <div className="assistant__results">
-                    {wateringSchedules.map((schedule) => (
-                      <Card key={schedule.culture.id} variant="glass">
-                        <h3 className="assistant__title">{schedule.culture.title}</h3>
-                        <ul className="assistant__list">
-                          {schedule.stages.map((stage) => (
-                            <li key={`${schedule.culture.id}-${stage.stage}`}>
-                              {stage.stage}: {stage.frequency}. {stage.notes}
-                            </li>
-                          ))}
-                        </ul>
-                      </Card>
-                    ))}
-                  </div>
-                </Section>
-
-                <Section title="Совместимость культур" hint="Что рядом сажать, чего избегать">
-                  <div className="assistant__results">
-                    {compatibilityItems.map(({ culture, info }) => (
-                      <Card key={culture.id} variant="glass">
-                        <h3 className="assistant__title">{culture.title}</h3>
-                        {info ? (
-                          <>
-                            <p className="assistant__meta">
-                              Хорошие соседи: {info.good.length ? info.good.map(resolveCultureName).join(', ') : '—'}
-                            </p>
-                            <p className="assistant__meta">
-                              Избегать: {info.bad.length ? info.bad.map(resolveCultureName).join(', ') : '—'}
-                            </p>
-                          </>
-                        ) : (
-                          <p className="assistant__meta">Пока нет данных по совместимости.</p>
-                        )}
-                      </Card>
-                    ))}
-                  </div>
-                </Section>
-
-                <Section title="Поэтапные рекомендации" hint="Рассада → пересадка → плодоношение">
-                  <Card variant="glass">
-                    <div className="assistant__custom-row">
-                      <div>
-                        <label className="assistant__label">Культура</label>
-                        <Select
-                          value={stageCulture?.id ?? stageCultureId}
-                          onChange={(event) => setStageCultureId(event.target.value)}
-                        >
-                          {groupedCultures.flatMap((group) =>
-                            group.items.map((item) => (
-                              <option key={item.id} value={item.id}>
-                                {item.title}
-                              </option>
-                            )),
-                          )}
-                        </Select>
-                      </div>
-                      <div>
-                        <label className="assistant__label">Старт цикла</label>
-                        <Input
-                          type="date"
-                          value={stageStartDate}
-                          onChange={(event) => setStageStartDate(event.target.value)}
-                        />
-                      </div>
-                    </div>
-                  </Card>
-
-                  {stageSchedule ? (
-                    <div className="assistant__results">
-                      {stageSchedule.map((stage) => (
-                        <Card key={stage.id} variant="glass">
-                          <h3 className="assistant__title">{stage.title}</h3>
-                          <p className="assistant__meta">{stage.range}</p>
-                          <p className="assistant__meta">{stage.tips}</p>
-                        </Card>
-                      ))}
-                    </div>
-                  ) : (
-                    <Card variant="glass">
-                      <p className="assistant__meta">Укажите культуру и дату старта, чтобы получить этапы.</p>
-                    </Card>
-                  )}
-                </Section>
-
-                <Section title="Напоминания" hint="Уведомления о начале этапов">
-                  <Card variant="accent">
-                    <p className="assistant__meta">
-                      Статус уведомлений:{' '}
-                      {notificationPermission === 'granted'
-                        ? 'разрешены'
-                        : notificationPermission === 'denied'
-                          ? 'запрещены'
-                          : notificationPermission === 'unsupported'
-                            ? 'не поддерживаются'
-                            : 'не запрошены'}
-                    </p>
-                    <div className="assistant__actions-row">
-                      {notificationPermission !== 'granted' && notificationPermission !== 'unsupported' ? (
-                        <Button variant="secondary" onClick={requestNotifications}>
-                          Разрешить уведомления
-                        </Button>
-                      ) : null}
-                      <Button
-                        variant="primary"
-                        onClick={addStageReminders}
-                        disabled={!stageSchedule}
-                      >
-                        Создать напоминания по этапам
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        onClick={clearReminders}
-                        disabled={reminders.length === 0}
-                      >
-                        Очистить
-                      </Button>
-                    </div>
-                  </Card>
-
-                  <div className="assistant__results">
-                    {sortedReminders.map((item) => (
-                      <Card key={item.id} variant="glass">
-                        <p className="assistant__meta">{formatReminderTime(item.time)}</p>
-                        <h3 className="assistant__title">{item.title}</h3>
-                        <p className="assistant__meta">{item.message}</p>
-                        <div className="assistant__actions-row">
-                          <span className={`assistant__badge ${item.fired ? 'assistant__badge--done' : ''}`}>
-                            {item.fired ? 'Отправлено' : 'Ожидает'}
-                          </span>
-                          <Button variant="chip" onClick={() => deleteReminder(item.id)}>
-                            Удалить
-                          </Button>
-                        </div>
-                      </Card>
-                    ))}
-                    {sortedReminders.length === 0 && (
-                      <Card variant="glass">
-                        <p className="assistant__meta">Пока нет напоминаний.</p>
-                      </Card>
-                    )}
-                  </div>
-                </Section>
-
-                <Section title="Календарь работ по участкам на месяц" hint="Выберите участок и месяц">
-                  <Card variant="accent">
-                    <div className="assistant__custom-row">
-                      <div>
-                        <label className="assistant__label">Участок</label>
-                        <Select
-                          value={calendarPlotId}
-                          onChange={(event) => setCalendarPlotId(event.target.value)}
-                        >
-                          {plots.map((plot) => (
-                            <option key={plot.id} value={plot.id}>
-                              {plot.name}
-                            </option>
-                          ))}
-                        </Select>
-                      </div>
-                      <div>
-                        <label className="assistant__label">Месяц</label>
-                        <div className="assistant__actions-row">
-                          <Button
-                            variant="chip"
-                            onClick={() => setCalendarMonthOffset((prev) => prev - 1)}
-                          >
-                            ◀
-                          </Button>
-                          <span className="assistant__meta">{monthlyCalendar.label}</span>
-                          <Button
-                            variant="chip"
-                            onClick={() => setCalendarMonthOffset((prev) => prev + 1)}
-                          >
-                            ▶
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                    <p className="assistant__meta">
-                      Для календаря используются культуры, закреплённые за выбранным участком.
-                    </p>
-                  </Card>
-
-                  {calendarCultureItems.length > 0 ? (
-                    <div className="assistant__month-grid">
-                      {Array.from({ length: monthlyCalendar.leading }).map((_, index) => (
-                        <div key={`empty-${index}`} className="assistant__month-cell assistant__month-cell--empty" />
-                      ))}
-                      {monthlyCalendar.days.map((day) => (
-                        <div
-                          key={day.date}
-                          className={`assistant__month-cell${day.isToday ? ' assistant__month-cell--today' : ''}`}
-                        >
-                          <div className="assistant__month-day">{day.day}</div>
-                          <div className="assistant__month-meta">{day.phase}</div>
-                          <div className="assistant__month-meta">{day.zodiac}</div>
-                          <div className="assistant__month-badges">
-                            <span className="assistant__badge assistant__badge--good">+{day.good}</span>
-                            <span className="assistant__badge assistant__badge--ok">±{day.ok}</span>
-                            <span className="assistant__badge assistant__badge--bad">−{day.bad}</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <Card variant="glass">
-                      <p className="assistant__meta">
-                        Закрепите культуры за участком, чтобы построить календарь.
-                      </p>
-                    </Card>
-                  )}
-                </Section>
-
-                <Section title="Календарь на 14 дней" hint="Ближайшие окна для работ">
-                  <div className="assistant__calendar">
-                    {calendarDays.map((day) => (
-                      <Card key={day.date} variant="glass">
-                        <p className="assistant__meta">{day.date}</p>
-                        <p className="assistant__meta">{day.phase}, {day.zodiac}</p>
-                        <div className="assistant__badges">
-                          <span className="assistant__badge assistant__badge--good">
-                            Посадки: {day.cultureGood}
-                          </span>
-                          <span className="assistant__badge assistant__badge--bad">
-                            Посадки: {day.cultureBad}
-                          </span>
-                        </div>
-                      </Card>
-                    ))}
-                  </div>
-                </Section>
-
-                <p className="assistant__disclaimer">{DISCLAIMER}</p>
-              </Section>
-            )}
-          </>
-        )}
-
-        {flow === 'care' && (
-          <>
-            <Section title="Шаг 1. Выберите работы">
-              <Card variant="glass">
-                <div className="assistant__grid">
-                  {TASKS.map((task) => (
-                    <label key={task.id} className="assistant__check">
-                      <input
-                        type="checkbox"
-                        checked={selectedTasks.includes(task.id)}
-                        onChange={() => toggleTask(task.id)}
-                      />
-                      <span>{task.title}</span>
-                    </label>
-                  ))}
-                </div>
-              </Card>
-              <div className="assistant__cta">
-                <Button
-                  variant="primary"
-                  onClick={() => setCareStep(1)}
-                  disabled={selectedTasks.length === 0}
-                >
-                  Посмотреть рекомендации
-                </Button>
-                <Button variant="ghost" onClick={resetFlow}>
-                  На главный экран
-                </Button>
-              </div>
-            </Section>
-
-            {careStep >= 1 && (
-              <Section title="Рекомендации на сегодня">
-                <Card className="assistant__summary" variant="glass">
-                  <p>{summaryText}</p>
-                  <p>{seasonNote}</p>
-                </Card>
-
-                <Card variant="accent">
-                  <h3 className="assistant__title">Данные Луны</h3>
-                  <p className="assistant__meta">
-                    Авто: {phaseLabel(autoContext.phase)}, знак {autoContext.zodiac}
-                  </p>
-                  <label className="assistant__check">
-                    <input
-                      type="checkbox"
-                      checked={manualMode}
-                      onChange={handleManualToggle}
-                    />
-                    <span>Ручной режим (для тестов)</span>
-                  </label>
-                  {manualMode && (
-                    <div className="assistant__custom-row">
-                      <Select
-                        value={lunarContext.phase}
-                        onChange={(event) =>
-                          setLunarContext((prev) => ({
-                            ...prev,
-                            phase: event.target.value as LunarContext['phase'],
-                          }))
-                        }
-                      >
-                        {PHASES.map((phase) => (
-                          <option key={phase.id} value={phase.id}>
-                            {phase.title}
-                          </option>
-                        ))}
-                      </Select>
-                      <Select
-                        value={lunarContext.zodiac}
-                        onChange={(event) =>
-                          setLunarContext((prev) => ({
-                            ...prev,
-                            zodiac: event.target.value as LunarContext['zodiac'],
-                          }))
-                        }
-                      >
-                        {ZODIAC_SIGNS.map((sign) => (
-                          <option key={sign} value={sign}>
-                            {sign}
-                          </option>
-                        ))}
-                      </Select>
-                      <label className="assistant__check">
-                        <input
-                          type="checkbox"
-                          checked={lunarContext.isForbiddenWindow}
-                          onChange={(event) =>
-                            setLunarContext((prev) => ({
-                              ...prev,
-                              isForbiddenWindow: event.target.checked,
-                            }))
-                          }
-                        />
-                        <span>Неблагоприятное окно (±12 часов)</span>
-                      </label>
-                    </div>
-                  )}
-                </Card>
-
-                <div className="assistant__results">
-                  {taskAssessments.map((item) => (
-                    <Card key={item.id} variant="glass">
-                      <h3 className="assistant__title">{item.title}</h3>
-                      <p
-                        className={`assistant__status assistant__status--${item.status}`}
-                      >
-                        {statusLabel(item.status)}
-                      </p>
-                      <p className="assistant__meta">{item.explanation}</p>
-                      <ul className="assistant__list">
-                        {item.instructions.map((tip) => (
-                          <li key={tip}>{tip}</li>
-                        ))}
-                      </ul>
-                      {item.suggestedDates && (
-                        <p className="assistant__meta">
-                          Ближайшие даты: {item.suggestedDates.join(', ')}
-                        </p>
-                      )}
-                    </Card>
-                  ))}
-                </div>
-
-                <Section title="Календарь на 14 дней" hint="Окна для выбранных работ">
-                  <div className="assistant__calendar">
-                    {calendarDays.map((day) => (
-                      <Card key={day.date} variant="glass">
-                        <p className="assistant__meta">{day.date}</p>
-                        <p className="assistant__meta">{day.phase}, {day.zodiac}</p>
-                        <div className="assistant__badges">
-                          <span className="assistant__badge assistant__badge--good">
-                            Работы: {day.taskGood}
-                          </span>
-                          <span className="assistant__badge assistant__badge--bad">
-                            Работы: {day.taskBad}
-                          </span>
-                        </div>
-                      </Card>
-                    ))}
-                  </div>
-                </Section>
-
-                <p className="assistant__disclaimer">{DISCLAIMER}</p>
-              </Section>
-            )}
-          </>
-        )}
-
-        {flow === 'orchard' && (
-          <>
-            <Section title="Сад" hint="Деревья и ягодники">
-              <Card variant="glass">
-                <div className="assistant__chips">
-                  <Button
-                    variant={orchardTab === 'overview' ? 'primary' : 'chip'}
-                    onClick={() => setOrchardTab('overview')}
-                  >
-                    Рекомендации
-                  </Button>
-                  <Button
-                    variant={orchardTab === 'schedule' ? 'primary' : 'chip'}
-                    onClick={() => setOrchardTab('schedule')}
-                  >
-                    График
-                  </Button>
-                </div>
-              </Card>
-              <div className="assistant__cta">
-                <Button variant="ghost" onClick={resetFlow}>
-                  На главный экран
-                </Button>
-              </div>
-            </Section>
-
-            {orchardTab === 'overview' && (
-              <>
-                <Section title="Садовые культуры">
-                  <Card variant="glass">
-                    <div className="assistant__grid">
-                      {ORCHARD_TREES.map((tree) => (
-                        <label key={tree.id} className="assistant__check">
-                          <input
-                            type="checkbox"
-                            checked={selectedOrchard.includes(tree.id)}
-                            onChange={() => toggleOrchard(tree.id)}
-                          />
-                          <span>{tree.title}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </Card>
-                </Section>
-
-                {selectedOrchard.length > 0 && (
+                {planStep >= 2 && (
                   <Section title="Рекомендации на сегодня">
                     <Card className="assistant__summary" variant="glass">
                       <p>{summaryText}</p>
                       <p>{seasonNote}</p>
                     </Card>
 
-                    <Card variant="accent">
-                      <h3 className="assistant__title">Данные Луны</h3>
-                      <p className="assistant__meta">
-                        Авто: {phaseLabel(autoContext.phase)}, знак {autoContext.zodiac}
-                      </p>
-                      <label className="assistant__check">
-                        <input
-                          type="checkbox"
-                          checked={manualMode}
-                          onChange={handleManualToggle}
-                        />
-                        <span>Ручной режим (для тестов)</span>
-                      </label>
-                      {manualMode && (
-                        <div className="assistant__custom-row">
-                          <Select
-                            value={lunarContext.phase}
-                            onChange={(event) =>
-                              setLunarContext((prev) => ({
-                                ...prev,
-                                phase: event.target.value as LunarContext['phase'],
-                              }))
-                            }
+                    <div className="assistant__results">
+                      {planAssessments.map((item) => (
+                        <Card key={item.id} variant="glass">
+                          <h3 className="assistant__title">{item.title}</h3>
+                          <p
+                            className={`assistant__status assistant__status--${item.status}`}
                           >
-                            {PHASES.map((phase) => (
-                              <option key={phase.id} value={phase.id}>
-                                {phase.title}
-                              </option>
-                            ))}
-                          </Select>
-                          <Select
-                            value={lunarContext.zodiac}
-                            onChange={(event) =>
-                              setLunarContext((prev) => ({
-                                ...prev,
-                                zodiac: event.target.value as LunarContext['zodiac'],
-                              }))
-                            }
-                          >
-                            {ZODIAC_SIGNS.map((sign) => (
-                              <option key={sign} value={sign}>
-                                {sign}
-                              </option>
-                            ))}
-                          </Select>
-                          <label className="assistant__check">
-                            <input
-                              type="checkbox"
-                              checked={lunarContext.isForbiddenWindow}
-                              onChange={(event) =>
-                                setLunarContext((prev) => ({
-                                  ...prev,
-                                  isForbiddenWindow: event.target.checked,
-                                }))
-                              }
-                            />
-                            <span>Неблагоприятное окно (±12 часов)</span>
-                          </label>
+                            {statusLabel(item.status)}
+                          </p>
+                          <p className="assistant__meta">{item.explanation}</p>
+                          <p className="assistant__meta">Тип: {cultureTypeLabel(item.type)}</p>
+                          {item.suggestedDates && (
+                            <p className="assistant__meta">
+                              Ближайшие даты: {item.suggestedDates.join(', ')}
+                            </p>
+                          )}
+                        </Card>
+                      ))}
+                    </div>
+
+                    {cultureDetails.length > 0 && (
+                      <Section title="Карточки культур" hint="Быстрые подсказки по уходу">
+                        <div className="assistant__results">
+                          {cultureDetails.map((detail) => (
+                            <Card key={detail.id} variant="glass">
+                              <h3 className="assistant__title">{detail.title}</h3>
+                              <p className="assistant__meta">Полив: {detail.watering}</p>
+                              <p className="assistant__meta">Подкормка: {detail.feeding}</p>
+                              <p className="assistant__meta">Пересадка: {detail.transplant}</p>
+                              <p className="assistant__meta">Особенности: {detail.notes}</p>
+                            </Card>
+                          ))}
                         </div>
-                      )}
-                    </Card>
+                      </Section>
+                    )}
 
-                    <Section title="Посадки и пересадки деревьев">
+                    <Section title="График полива по фазам роста">
                       <div className="assistant__results">
-                        {orchardAssessments.map((item) => (
-                          <Card key={item.id} variant="glass">
-                            <h3 className="assistant__title">{item.title}</h3>
-                            <p className={`assistant__status assistant__status--${item.status}`}>
-                              {statusLabel(item.status)}
-                            </p>
-                            <p className="assistant__meta">{item.explanation}</p>
-                            {item.suggestedDates && (
-                              <p className="assistant__meta">
-                                Ближайшие даты: {item.suggestedDates.join(', ')}
-                              </p>
-                            )}
-                          </Card>
-                        ))}
-                      </div>
-                    </Section>
-
-                    <Section title="Уход за садом">
-                      <div className="assistant__results">
-                        {orchardTaskAssessments.map((item) => (
-                          <Card key={item.id} variant="glass">
-                            <h3 className="assistant__title">{item.title}</h3>
-                            <p className={`assistant__status assistant__status--${item.status}`}>
-                              {statusLabel(item.status)}
-                            </p>
-                            <p className="assistant__meta">{item.explanation}</p>
+                        {wateringSchedules.map((schedule) => (
+                          <Card key={schedule.culture.id} variant="glass">
+                            <h3 className="assistant__title">{schedule.culture.title}</h3>
                             <ul className="assistant__list">
-                              {item.instructions.map((tip) => (
-                                <li key={tip}>{tip}</li>
+                              {schedule.stages.map((stage) => (
+                                <li key={`${schedule.culture.id}-${stage.stage}`}>
+                                  {stage.stage}: {stage.frequency}. {stage.notes}
+                                </li>
                               ))}
                             </ul>
                           </Card>
@@ -2028,22 +1402,72 @@ export const IndexPage: FC = () => {
                       </div>
                     </Section>
 
-                    <Section title="Особые рекомендации">
+                    <Section title="Совместимость культур" hint="Что рядом сажать, чего избегать">
                       <div className="assistant__results">
-                        {selectedOrchardItems.map((tree) => {
-                          const detail = ORCHARD_DETAILS[tree.id];
-                          if (!detail) return null;
-                          return (
-                            <Card key={tree.id} variant="glass">
-                              <h3 className="assistant__title">{tree.title}</h3>
-                              <p className="assistant__meta">Обрезка: {detail.pruning}</p>
-                              <p className="assistant__meta">Вредители: {detail.pests}</p>
-                              <p className="assistant__meta">Подкормки: {detail.feeding}</p>
-                              <p className="assistant__meta">{detail.notes}</p>
-                            </Card>
-                          );
-                        })}
+                        {compatibilityItems.map(({ culture, info }) => (
+                          <Card key={culture.id} variant="glass">
+                            <h3 className="assistant__title">{culture.title}</h3>
+                            {info ? (
+                              <>
+                                <p className="assistant__meta">
+                                  Хорошие соседи: {info.good.length ? info.good.map(resolveCultureName).join(', ') : '—'}
+                                </p>
+                                <p className="assistant__meta">
+                                  Избегать: {info.bad.length ? info.bad.map(resolveCultureName).join(', ') : '—'}
+                                </p>
+                              </>
+                            ) : (
+                              <p className="assistant__meta">Пока нет данных по совместимости.</p>
+                            )}
+                          </Card>
+                        ))}
                       </div>
+                    </Section>
+
+                    <Section title="Поэтапные рекомендации" hint="Рассада → пересадка → плодоношение">
+                      <Card variant="glass">
+                        <div className="assistant__custom-row">
+                          <div>
+                            <label className="assistant__label">Культура</label>
+                            <Select
+                              value={stageCulture?.id ?? stageCultureId}
+                              onChange={(event) => setStageCultureId(event.target.value)}
+                            >
+                              {groupedCultures.flatMap((group) =>
+                                group.items.map((item) => (
+                                  <option key={item.id} value={item.id}>
+                                    {item.title}
+                                  </option>
+                                )),
+                              )}
+                            </Select>
+                          </div>
+                          <div>
+                            <label className="assistant__label">Старт цикла</label>
+                            <Input
+                              type="date"
+                              value={stageStartDate}
+                              onChange={(event) => setStageStartDate(event.target.value)}
+                            />
+                          </div>
+                        </div>
+                      </Card>
+
+                      {stageSchedule ? (
+                        <div className="assistant__results">
+                          {stageSchedule.map((stage) => (
+                            <Card key={stage.id} variant="glass">
+                              <h3 className="assistant__title">{stage.title}</h3>
+                              <p className="assistant__meta">{stage.range}</p>
+                              <p className="assistant__meta">{stage.tips}</p>
+                            </Card>
+                          ))}
+                        </div>
+                      ) : (
+                        <Card variant="glass">
+                          <p className="assistant__meta">Укажите культуру и дату старта, чтобы получить этапы.</p>
+                        </Card>
+                      )}
                     </Section>
 
                     <p className="assistant__disclaimer">{DISCLAIMER}</p>
@@ -2052,114 +1476,537 @@ export const IndexPage: FC = () => {
               </>
             )}
 
-            {orchardTab === 'schedule' && (
-              <Section title="График подкормок и обработок" hint="По неделям, апрель–октябрь">
-                <Card variant="accent">
-                  <div className="assistant__custom-row">
-                    <div>
-                      <label className="assistant__label">График для культуры</label>
-                      <Select
-                        value={orchardScheduleId}
-                        onChange={(event) => setOrchardScheduleId(event.target.value)}
-                      >
-                        {ORCHARD_TREES.map((tree) => (
-                          <option key={tree.id} value={tree.id}>
-                            {tree.title}
-                          </option>
-                        ))}
-                      </Select>
+            {flow === 'care' && (
+              <>
+                <Section title="Шаг 1. Выберите работы">
+                  <Card variant="glass">
+                    <div className="assistant__grid">
+                      {TASKS.map((task) => (
+                        <label key={task.id} className="assistant__check">
+                          <input
+                            type="checkbox"
+                            checked={selectedTasks.includes(task.id)}
+                            onChange={() => toggleTask(task.id)}
+                          />
+                          <span>{task.title}</span>
+                        </label>
+                      ))}
                     </div>
-                    <p className="assistant__meta">
-                      Расписание учитывает климат Челябинской области.
-                    </p>
+                  </Card>
+                  <div className="assistant__cta">
+                    <Button
+                      variant="primary"
+                      onClick={() => setCareStep(1)}
+                      disabled={selectedTasks.length === 0}
+                    >
+                      Посмотреть рекомендации
+                    </Button>
+                    <Button variant="ghost" onClick={resetFlow}>
+                      На главный экран
+                    </Button>
                   </div>
-                </Card>
-                <div className="assistant__results">
-                  {orchardSchedule.map((step) => (
-                    <Card key={step.period} variant="glass">
-                      <h3 className="assistant__title">{step.period}</h3>
-                      <p className="assistant__meta">Подкормка: {step.feeding}</p>
-                      <p className="assistant__meta">Вредители: {step.pests}</p>
+                </Section>
+
+                {careStep >= 1 && (
+                  <Section title="Рекомендации на сегодня">
+                    <Card className="assistant__summary" variant="glass">
+                      <p>{summaryText}</p>
+                      <p>{seasonNote}</p>
                     </Card>
-                  ))}
-                </div>
-                <p className="assistant__disclaimer">{DISCLAIMER}</p>
-              </Section>
+
+                    <div className="assistant__results">
+                      {taskAssessments.map((item) => (
+                        <Card key={item.id} variant="glass">
+                          <h3 className="assistant__title">{item.title}</h3>
+                          <p
+                            className={`assistant__status assistant__status--${item.status}`}
+                          >
+                            {statusLabel(item.status)}
+                          </p>
+                          <p className="assistant__meta">{item.explanation}</p>
+                          <ul className="assistant__list">
+                            {item.instructions.map((tip) => (
+                              <li key={tip}>{tip}</li>
+                            ))}
+                          </ul>
+                          {item.suggestedDates && (
+                            <p className="assistant__meta">
+                              Ближайшие даты: {item.suggestedDates.join(', ')}
+                            </p>
+                          )}
+                        </Card>
+                      ))}
+                    </div>
+
+                    <p className="assistant__disclaimer">{DISCLAIMER}</p>
+                  </Section>
+                )}
+              </>
+            )}
+
+            {flow === 'orchard' && (
+              <>
+                <Section title="Сад" hint="Деревья и ягодники">
+                  <Card variant="glass">
+                    <div className="assistant__chips">
+                      <Button
+                        variant={orchardTab === 'overview' ? 'primary' : 'chip'}
+                        onClick={() => setOrchardTab('overview')}
+                      >
+                        Рекомендации
+                      </Button>
+                      <Button
+                        variant={orchardTab === 'schedule' ? 'primary' : 'chip'}
+                        onClick={() => setOrchardTab('schedule')}
+                      >
+                        График
+                      </Button>
+                    </div>
+                  </Card>
+                  <div className="assistant__cta">
+                    <Button variant="ghost" onClick={resetFlow}>
+                      На главный экран
+                    </Button>
+                  </div>
+                </Section>
+
+                {orchardTab === 'overview' && (
+                  <>
+                    <Section title="Садовые культуры">
+                      <Card variant="glass">
+                        <div className="assistant__grid">
+                          {ORCHARD_TREES.map((tree) => (
+                            <label key={tree.id} className="assistant__check">
+                              <input
+                                type="checkbox"
+                                checked={selectedOrchard.includes(tree.id)}
+                                onChange={() => toggleOrchard(tree.id)}
+                              />
+                              <span>{tree.title}</span>
+                            </label>
+                          ))}
+                        </div>
+                      </Card>
+                    </Section>
+
+                    {selectedOrchard.length > 0 && (
+                      <Section title="Рекомендации на сегодня">
+                        <Card className="assistant__summary" variant="glass">
+                          <p>{summaryText}</p>
+                          <p>{seasonNote}</p>
+                        </Card>
+
+                        <Section title="Посадки и пересадки деревьев">
+                          <div className="assistant__results">
+                            {orchardAssessments.map((item) => (
+                              <Card key={item.id} variant="glass">
+                                <h3 className="assistant__title">{item.title}</h3>
+                                <p className={`assistant__status assistant__status--${item.status}`}>
+                                  {statusLabel(item.status)}
+                                </p>
+                                <p className="assistant__meta">{item.explanation}</p>
+                                {item.suggestedDates && (
+                                  <p className="assistant__meta">
+                                    Ближайшие даты: {item.suggestedDates.join(', ')}
+                                  </p>
+                                )}
+                              </Card>
+                            ))}
+                          </div>
+                        </Section>
+
+                        <Section title="Уход за садом">
+                          <div className="assistant__results">
+                            {orchardTaskAssessments.map((item) => (
+                              <Card key={item.id} variant="glass">
+                                <h3 className="assistant__title">{item.title}</h3>
+                                <p className={`assistant__status assistant__status--${item.status}`}>
+                                  {statusLabel(item.status)}
+                                </p>
+                                <p className="assistant__meta">{item.explanation}</p>
+                                <ul className="assistant__list">
+                                  {item.instructions.map((tip) => (
+                                    <li key={tip}>{tip}</li>
+                                  ))}
+                                </ul>
+                              </Card>
+                            ))}
+                          </div>
+                        </Section>
+
+                        <Section title="Особые рекомендации">
+                          <div className="assistant__results">
+                            {selectedOrchardItems.map((tree) => {
+                              const detail = ORCHARD_DETAILS[tree.id];
+                              if (!detail) return null;
+                              return (
+                                <Card key={tree.id} variant="glass">
+                                  <h3 className="assistant__title">{tree.title}</h3>
+                                  <p className="assistant__meta">Обрезка: {detail.pruning}</p>
+                                  <p className="assistant__meta">Вредители: {detail.pests}</p>
+                                  <p className="assistant__meta">Подкормки: {detail.feeding}</p>
+                                  <p className="assistant__meta">{detail.notes}</p>
+                                </Card>
+                              );
+                            })}
+                          </div>
+                        </Section>
+
+                        <p className="assistant__disclaimer">{DISCLAIMER}</p>
+                      </Section>
+                    )}
+                  </>
+                )}
+
+                {orchardTab === 'schedule' && (
+                  <Section title="График подкормок и обработок" hint="По неделям, апрель–октябрь">
+                    <Card variant="accent">
+                      <div className="assistant__custom-row">
+                        <div>
+                          <label className="assistant__label">График для культуры</label>
+                          <Select
+                            value={orchardScheduleId}
+                            onChange={(event) => setOrchardScheduleId(event.target.value)}
+                          >
+                            {ORCHARD_TREES.map((tree) => (
+                              <option key={tree.id} value={tree.id}>
+                                {tree.title}
+                              </option>
+                            ))}
+                          </Select>
+                        </div>
+                        <p className="assistant__meta">
+                          Расписание учитывает климат Челябинской области.
+                        </p>
+                      </div>
+                    </Card>
+                    <div className="assistant__results">
+                      {orchardSchedule.map((step) => (
+                        <Card key={step.period} variant="glass">
+                          <h3 className="assistant__title">{step.period}</h3>
+                          <p className="assistant__meta">Подкормка: {step.feeding}</p>
+                          <p className="assistant__meta">Вредители: {step.pests}</p>
+                        </Card>
+                      ))}
+                    </div>
+                    <p className="assistant__disclaimer">{DISCLAIMER}</p>
+                  </Section>
+                )}
+              </>
+            )}
+
+            {flow === 'feeding' && (
+              <>
+                <Section title="Подкормка после высадки" hint="Планируем цикл до сбора урожая">
+                  <Card variant="glass">
+                    <div className="assistant__custom-row">
+                      <div>
+                        <label className="assistant__label">Культура</label>
+                        <Select
+                          value={feedingCulture?.id ?? feedingCultureId}
+                          onChange={(event) => setFeedingCultureId(event.target.value)}
+                        >
+                        {groupedCultures.flatMap((group) =>
+                          group.items.map((item) => (
+                            <option key={item.id} value={item.id}>
+                              {item.title}
+                            </option>
+                          ))
+                        )}
+                        </Select>
+                      </div>
+                      <div>
+                        <label className="assistant__label">Дата высадки</label>
+                        <Input
+                          type="date"
+                          value={feedingDate}
+                          onChange={(event) => setFeedingDate(event.target.value)}
+                        />
+                      </div>
+                    </div>
+                  </Card>
+
+                  <div className="assistant__cta">
+                    <Button variant="ghost" onClick={resetFlow}>
+                      На главный экран
+                    </Button>
+                  </div>
+                </Section>
+
+                <Section title="График подкормок" hint="Дни после высадки">
+                  <Card className="assistant__summary" variant="glass">
+                    {feedingSchedule ? (
+                      <>
+                        <p>
+                          Первая подкормка через {feedingSchedule.plan.firstAfterDays} дней,
+                          далее каждые {feedingSchedule.plan.intervalDays} дней.
+                        </p>
+                        <p className="assistant__meta">
+                          Ориентировочное начало сбора урожая: {feedingSchedule.harvestDate}.
+                        </p>
+                        <p className="assistant__meta">{feedingSchedule.plan.note}</p>
+                      </>
+                    ) : (
+                      <p className="assistant__meta">Укажите культуру и дату высадки.</p>
+                    )}
+                  </Card>
+
+                  {feedingSchedule && (
+                    <div className="assistant__results">
+                      {feedingSchedule.steps.map((step) => (
+                        <Card key={step.date} variant="glass">
+                          <p className="assistant__meta">{step.label}</p>
+                          <h3 className="assistant__title">{step.date}</h3>
+                        </Card>
+                      ))}
+                    </div>
+                  )}
+
+                  <p className="assistant__disclaimer">{DISCLAIMER}</p>
+                </Section>
+              </>
             )}
           </>
         )}
 
-        {flow === 'feeding' && (
+        {activeTab === 'calendar' && (
           <>
-            <Section title="Подкормка после высадки" hint="Планируем цикл до сбора урожая">
-              <Card variant="glass">
+            <Section title="Календарь работ по участкам на месяц" hint="Выберите участок и месяц">
+              <Card variant="accent">
                 <div className="assistant__custom-row">
                   <div>
-                    <label className="assistant__label">Культура</label>
+                    <label className="assistant__label">Участок</label>
                     <Select
-                      value={feedingCulture?.id ?? feedingCultureId}
-                      onChange={(event) => setFeedingCultureId(event.target.value)}
+                      value={calendarPlotId}
+                      onChange={(event) => setCalendarPlotId(event.target.value)}
                     >
-                    {groupedCultures.flatMap((group) =>
-                      group.items.map((item) => (
-                        <option key={item.id} value={item.id}>
-                          {item.title}
+                      {plots.map((plot) => (
+                        <option key={plot.id} value={plot.id}>
+                          {plot.name}
                         </option>
-                      ))
-                    )}
+                      ))}
                     </Select>
                   </div>
                   <div>
-                    <label className="assistant__label">Дата высадки</label>
-                    <Input
-                      type="date"
-                      value={feedingDate}
-                      onChange={(event) => setFeedingDate(event.target.value)}
-                    />
+                    <label className="assistant__label">Месяц</label>
+                    <div className="assistant__actions-row">
+                      <Button
+                        variant="chip"
+                        onClick={() => setCalendarMonthOffset((prev) => prev - 1)}
+                      >
+                        ◀
+                      </Button>
+                      <span className="assistant__meta">{monthlyCalendar.label}</span>
+                      <Button
+                        variant="chip"
+                        onClick={() => setCalendarMonthOffset((prev) => prev + 1)}
+                      >
+                        ▶
+                      </Button>
+                    </div>
                   </div>
                 </div>
+                <p className="assistant__meta">
+                  Для календаря используются культуры, закреплённые за выбранным участком.
+                </p>
               </Card>
 
-              <div className="assistant__cta">
-                <Button variant="ghost" onClick={resetFlow}>
-                  На главный экран
-                </Button>
-              </div>
-            </Section>
-
-            <Section title="График подкормок" hint="Дни после высадки">
-              <Card className="assistant__summary" variant="glass">
-                {feedingSchedule ? (
-                  <>
-                    <p>
-                      Первая подкормка через {feedingSchedule.plan.firstAfterDays} дней,
-                      далее каждые {feedingSchedule.plan.intervalDays} дней.
-                    </p>
-                    <p className="assistant__meta">
-                      Ориентировочное начало сбора урожая: {feedingSchedule.harvestDate}.
-                    </p>
-                    <p className="assistant__meta">{feedingSchedule.plan.note}</p>
-                  </>
-                ) : (
-                  <p className="assistant__meta">Укажите культуру и дату высадки.</p>
-                )}
-              </Card>
-
-              {feedingSchedule && (
-                <div className="assistant__results">
-                  {feedingSchedule.steps.map((step) => (
-                    <Card key={step.date} variant="glass">
-                      <p className="assistant__meta">{step.label}</p>
-                      <h3 className="assistant__title">{step.date}</h3>
-                    </Card>
+              {calendarCultureItems.length > 0 ? (
+                <div className="assistant__month-grid">
+                  {Array.from({ length: monthlyCalendar.leading }).map((_, index) => (
+                    <div key={`empty-${index}`} className="assistant__month-cell assistant__month-cell--empty" />
+                  ))}
+                  {monthlyCalendar.days.map((day) => (
+                    <div
+                      key={day.date}
+                      className={`assistant__month-cell${day.isToday ? ' assistant__month-cell--today' : ''}`}
+                    >
+                      <div className="assistant__month-day">{day.day}</div>
+                      <div className="assistant__month-meta">{day.phase}</div>
+                      <div className="assistant__month-meta">{day.zodiac}</div>
+                      <div className="assistant__month-badges">
+                        <span className="assistant__badge assistant__badge--good">+{day.good}</span>
+                        <span className="assistant__badge assistant__badge--ok">±{day.ok}</span>
+                        <span className="assistant__badge assistant__badge--bad">−{day.bad}</span>
+                      </div>
+                    </div>
                   ))}
                 </div>
+              ) : (
+                <Card variant="glass">
+                  <p className="assistant__meta">
+                    Закрепите культуры за участком, чтобы построить календарь.
+                  </p>
+                </Card>
               )}
+            </Section>
 
-              <p className="assistant__disclaimer">{DISCLAIMER}</p>
+            <Section title="Календарь на 14 дней" hint="Ближайшие окна для работ">
+              <div className="assistant__calendar">
+                {calendarDays.map((day) => (
+                  <Card key={day.date} variant="glass">
+                    <p className="assistant__meta">{day.date}</p>
+                    <p className="assistant__meta">{day.phase}, {day.zodiac}</p>
+                    <div className="assistant__badges">
+                      <span className="assistant__badge assistant__badge--good">
+                        Посадки: {day.cultureGood}
+                      </span>
+                      <span className="assistant__badge assistant__badge--bad">
+                        Посадки: {day.cultureBad}
+                      </span>
+                    </div>
+                  </Card>
+                ))}
+              </div>
             </Section>
           </>
         )}
+
+        {activeTab === 'assistant' && (
+          <>
+            <Card className="assistant__hero-card" variant="accent">
+              <div className="assistant__hero">
+                <div className="assistant__hero-content">
+                  <span className="assistant__eyebrow">AI Агроном</span>
+                  <h2 className="assistant__hero-title">Ваш личный помощник</h2>
+                  <p className="assistant__subtitle">
+                    Задайте любой вопрос о растениях, болезнях или планировании.
+                  </p>
+                  <Button
+                    variant="primary"
+                    className="assistant__cta-ai"
+                    onClick={() => navigate('/chat')}
+                    style={{ marginTop: '16px' }}
+                  >
+                    🤖 Начать чат
+                  </Button>
+                </div>
+              </div>
+            </Card>
+
+            <Section title="Сводка дня">
+              <Card className="assistant__summary" variant="glass">
+                <p>{summaryText}</p>
+                <p>{seasonNote}</p>
+              </Card>
+            </Section>
+
+            <Section title="Напоминания" hint="Уведомления о начале этапов">
+              <Card variant="accent">
+                <p className="assistant__meta">
+                  Статус уведомлений:{' '}
+                  {notificationPermission === 'granted'
+                    ? 'разрешены'
+                    : notificationPermission === 'denied'
+                      ? 'запрещены'
+                      : notificationPermission === 'unsupported'
+                        ? 'не поддерживаются'
+                        : 'не запрошены'}
+                </p>
+                <div className="assistant__actions-row">
+                  {notificationPermission !== 'granted' && notificationPermission !== 'unsupported' ? (
+                    <Button variant="secondary" onClick={requestNotifications}>
+                      Разрешить уведомления
+                    </Button>
+                  ) : null}
+                  <Button
+                    variant="primary"
+                    onClick={addStageReminders}
+                    disabled={!stageSchedule}
+                  >
+                    Создать напоминания по этапам
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    onClick={clearReminders}
+                    disabled={reminders.length === 0}
+                  >
+                    Очистить
+                  </Button>
+                </div>
+              </Card>
+
+              <div className="assistant__results">
+                {sortedReminders.map((item) => (
+                  <Card key={item.id} variant="glass">
+                    <p className="assistant__meta">{formatReminderTime(item.time)}</p>
+                    <h3 className="assistant__title">{item.title}</h3>
+                    <p className="assistant__meta">{item.message}</p>
+                    <div className="assistant__actions-row">
+                      <span className={`assistant__badge ${item.fired ? 'assistant__badge--done' : ''}`}>
+                        {item.fired ? 'Отправлено' : 'Ожидает'}
+                      </span>
+                      <Button variant="chip" onClick={() => deleteReminder(item.id)}>
+                        Удалить
+                      </Button>
+                    </div>
+                  </Card>
+                ))}
+                {sortedReminders.length === 0 && (
+                  <Card variant="glass">
+                    <p className="assistant__meta">Пока нет напоминаний.</p>
+                  </Card>
+                )}
+              </div>
+            </Section>
+          </>
+        )}
+
+        {activeTab === 'profile' && (
+          <Section title="Настройки профиля">
+            <Card variant="glass">
+              <div className="assistant__custom-row">
+                <div className="assistant__avatar" style={{ width: '64px', height: '64px' }} />
+                <div>
+                  <h3 className="assistant__title">Садовник</h3>
+                  <p className="assistant__meta">Любитель</p>
+                </div>
+              </div>
+            </Card>
+
+            <Section title="Мои участки">
+              <Card variant="glass">
+                <div className="assistant__chips">
+                  {plots.map((plot) => (
+                    <Button
+                      key={plot.id}
+                      variant={plot.id === activePlotId ? 'primary' : 'chip'}
+                      onClick={() => setActivePlotId(plot.id)}
+                    >
+                      {plot.name}
+                    </Button>
+                  ))}
+                </div>
+                <div className="assistant__custom-row" style={{ marginTop: '16px' }}>
+                  <Input
+                    value={newPlotName}
+                    onChange={(event) => setNewPlotName(event.target.value)}
+                    placeholder="Название нового участка"
+                  />
+                  <Button variant="secondary" onClick={addPlot}>
+                    Добавить
+                  </Button>
+                </div>
+              </Card>
+            </Section>
+
+            <Section title="Настройки региона">
+              <Card variant="glass">
+                <label className="assistant__label">Регион</label>
+                <Input
+                  value={region}
+                  onChange={handleRegionChange}
+                  placeholder={DEFAULT_REGION}
+                />
+                <p className="assistant__meta" style={{ marginTop: '8px' }}>
+                  Текущий часовой пояс: {DEFAULT_TIMEZONE}
+                </p>
+              </Card>
+            </Section>
+          </Section>
+        )}
+
+        <TabBar activeTab={activeTab} onTabChange={setActiveTab} />
       </div>
     </Page>
   );

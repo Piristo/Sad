@@ -1,0 +1,60 @@
+import { FC } from 'react';
+import './TabBar.css';
+
+export type TabId = 'home' | 'calendar' | 'assistant' | 'profile';
+
+interface TabBarProps {
+  activeTab: TabId;
+  onTabChange: (tab: TabId) => void;
+}
+
+export const TabBar: FC<TabBarProps> = ({ activeTab, onTabChange }) => {
+  return (
+    <nav className="tab-bar">
+      <button 
+        className={`tab-bar__item ${activeTab === 'home' ? 'active' : ''}`}
+        onClick={() => onTabChange('home')}
+      >
+        <svg className="tab-bar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+          <polyline points="9 22 9 12 15 12 15 22" />
+        </svg>
+        <span className="tab-bar__label">Главная</span>
+      </button>
+
+      <button 
+        className={`tab-bar__item ${activeTab === 'calendar' ? 'active' : ''}`}
+        onClick={() => onTabChange('calendar')}
+      >
+        <svg className="tab-bar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+          <line x1="16" y1="2" x2="16" y2="6" />
+          <line x1="8" y1="2" x2="8" y2="6" />
+          <line x1="3" y1="10" x2="21" y2="10" />
+        </svg>
+        <span className="tab-bar__label">Календарь</span>
+      </button>
+
+      <button 
+        className={`tab-bar__item ${activeTab === 'assistant' ? 'active' : ''}`}
+        onClick={() => onTabChange('assistant')}
+      >
+        <svg className="tab-bar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+        </svg>
+        <span className="tab-bar__label">Ассистент</span>
+      </button>
+
+      <button 
+        className={`tab-bar__item ${activeTab === 'profile' ? 'active' : ''}`}
+        onClick={() => onTabChange('profile')}
+      >
+        <svg className="tab-bar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+          <circle cx="12" cy="7" r="4" />
+        </svg>
+        <span className="tab-bar__label">Профиль</span>
+      </button>
+    </nav>
+  );
+};

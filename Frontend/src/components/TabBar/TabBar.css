@@ -1,0 +1,84 @@
+.tab-bar {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 32px);
+  max-width: 400px;
+  height: 64px;
+  background: rgba(24, 27, 33, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 24px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0 8px;
+  z-index: 1000;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 
+    0 10px 25px -5px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(0, 0, 0, 0.2);
+}
+
+.tab-bar__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 60px;
+  height: 100%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--text-tertiary);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.tab-bar__icon {
+  width: 24px;
+  height: 24px;
+  transition: all 0.3s ease;
+  opacity: 0.7;
+}
+
+.tab-bar__label {
+  font-size: 10px;
+  font-weight: 500;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: all 0.3s ease;
+}
+
+/* Active State */
+.tab-bar__item.active {
+  color: var(--primary);
+}
+
+.tab-bar__item.active .tab-bar__icon {
+  transform: translateY(-2px);
+  opacity: 1;
+  filter: drop-shadow(0 0 8px var(--primary-glow));
+}
+
+.tab-bar__item.active .tab-bar__label {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Glow effect for active tab */
+.tab-bar__item.active::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 20px;
+  background: var(--primary);
+  filter: blur(16px);
+  opacity: 0.4;
+  border-radius: 50%;
+}
