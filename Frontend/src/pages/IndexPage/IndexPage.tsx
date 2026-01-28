@@ -1,4 +1,4 @@
-﻿import type { FC, ChangeEvent } from 'react';
+import type { FC, ChangeEvent } from 'react';
 import { useMemo, useState, useEffect } from 'react';
 
 import { Page } from '@/components/Page.tsx';
@@ -356,6 +356,7 @@ function loadReminders(): ReminderItem[] {
 }
 
 export const IndexPage: FC = () => {
+  const navigate = useNavigate();
   const todayParts = useMemo(() => getZonedParts(new Date(), DEFAULT_TIMEZONE), []);
   const today = useMemo(() => zonedPartsToDate(todayParts), [todayParts]);
   const autoContext = useMemo(() => getLunarContext(today), [today]);

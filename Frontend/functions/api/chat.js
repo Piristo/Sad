@@ -26,6 +26,7 @@ export async function onRequestPost({ request, env }) {
 
     const openai = new OpenAI({
       apiKey: env.OPENAI_API_KEY,
+      baseURL: env.AI_API_BASE_URL || 'https://api.polza.ai/v1',
     });
 
     const completion = await openai.chat.completions.create({
