@@ -35,6 +35,12 @@ export const ChatPage: FC = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const handleInputFocus = () => {
+    setTimeout(() => {
+      scrollToBottom();
+    }, 300);
+  };
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -154,6 +160,7 @@ export const ChatPage: FC = () => {
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={handleKeyPress}
+            onFocus={handleInputFocus}
             disabled={isLoading}
           />
           <Button
