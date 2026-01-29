@@ -19,11 +19,40 @@ body {
   padding: 0;
   min-width: 320px;
   min-height: 100vh;
+  
+  /* Desktop wrapper styles */
+  background: #111; /* Dark background for desktop */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#root {
+  width: 100%;
+  max-width: 480px; /* Limit width on desktop */
+  height: 100vh;
+  
+  /* App background */
   background: var(--bg-primary);
   background-image: 
     radial-gradient(circle at 50% 0%, rgba(212, 244, 104, 0.03) 0%, transparent 50%),
     radial-gradient(circle at 100% 100%, rgba(74, 222, 128, 0.02) 0%, transparent 30%);
   background-attachment: fixed;
+  
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 50px rgba(0,0,0,0.5); /* Shadow for desktop view */
+}
+
+/* Mobile reset */
+@media (max-width: 480px) {
+  body {
+    background: var(--bg-primary);
+  }
+  #root {
+    max-width: none;
+    box-shadow: none;
+  }
 }
 
 h1, h2, h3, h4, h5, h6 {

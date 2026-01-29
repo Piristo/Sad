@@ -8,30 +8,43 @@ import { init } from '@/init.ts';
 
 import './index.css';
 
-// Mock the environment in case, we are outside Telegram.
-import './mockEnv.ts';
+// Import setupMockEnv
+import { setupMockEnv } from './mockEnv.ts';
 
 const root = ReactDOM.createRoot(document.getElementById('root')!);
 
-try {
-  const launchParams = retrieveLaunchParams();
-  const { tgWebAppPlatform: platform } = launchParams;
-  const debug = (launchParams.tgWebAppStartParam || '').includes('debug')
-    || import.meta.env.DEV;
+async function bootstrap() {
+  try {
+    // Try to retrieve launch params. If it fails, we are likely outside of Telegram.
+    let launchParams;
+    try {
+      launchParams = retrieveLaunchParams();
+    } catch (e) {
+      // If retrieval fails, setup mock environment
+      await setupMockEnv();
+      launchParams = retrieveLaunchParams();
+    }
 
-  // Configure all application dependencies.
-  await init({
-    debug,
-    eruda: debug && ['ios', 'android'].includes(platform),
-    mockForMacOS: platform === 'macos',
-  })
-    .then(() => {
-      root.render(
-        <StrictMode>
-          <Root/>
-        </StrictMode>,
-      );
+    const { tgWebAppPlatform: platform } = launchParams;
+    const debug = (launchParams.tgWebAppStartParam || '').includes('debug')
+      || import.meta.env.DEV;
+
+    // Configure all application dependencies.
+    await init({
+      debug,
+      eruda: debug && ['ios', 'android'].includes(platform),
+      mockForMacOS: platform === 'macos',
     });
-} catch (e) {
-  root.render(<EnvUnsupported/>);
+
+    root.render(
+      <StrictMode>
+        <Root/>
+      </StrictMode>,
+    );
+  } catch (e) {
+    console.error(e);
+    root.render(<EnvUnsupported/>);
+  }
 }
+
+bootstrap();
