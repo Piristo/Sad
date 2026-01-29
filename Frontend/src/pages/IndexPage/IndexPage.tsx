@@ -1012,7 +1012,7 @@ export const IndexPage: FC = () => {
 
   return (
     <Page back={false}>
-      <div className="assistant" style={{ paddingBottom: '90px' }}>
+      <div className="assistant">
         <header className="assistant__header">
           <div className="assistant__topline">
             <div 

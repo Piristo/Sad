@@ -28,7 +28,7 @@
 }
 
 .assistant {
-  min-height: 100vh;
+  min-height: 100%;
   padding: 24px 18px 120px;
   display: grid;
   gap: 24px;
