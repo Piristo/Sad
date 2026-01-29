@@ -72,7 +72,7 @@ export const ChatPage: FC = () => {
       const data = await response.json();
 
       const botMessage: Message = {
-        id: Date.now() + 1,
+        id: Date.now() + Math.random(),
         text: data.reply || 'Извините, я не получил ответа.',
         sender: 'assistant',
         timestamp: new Date()
@@ -82,7 +82,7 @@ export const ChatPage: FC = () => {
     } catch (error) {
       console.error('Error sending message:', error);
       const errorMessage: Message = {
-        id: Date.now() + 1,
+        id: Date.now() + Math.random(),
         text: 'Ошибка связи с сервером.',
         sender: 'assistant',
         timestamp: new Date()
