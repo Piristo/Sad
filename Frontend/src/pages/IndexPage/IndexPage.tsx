@@ -26,7 +26,6 @@ import { buildFeedingSchedule } from '@/assistant/feeding';
 import { buildStageSchedule } from '@/assistant/stages';
 import { getWateringSchedule } from '@/assistant/watering';
 import { getCompatibility } from '@/assistant/compatibility';
-import { CompatibilityWidget } from '@/components/CompatibilityWidget/CompatibilityWidget';
 import type {
   CultureGroupId,
   CultureItem,
@@ -1108,10 +1107,6 @@ export const IndexPage: FC = () => {
                   lunarPhase={phaseLabel(activeContext.phase)}
                   zodiacSign={activeContext.zodiac}
                 />
-
-                <Section title="Совместимость растений" hint="Проверьте соседей">
-                  <CompatibilityWidget />
-                </Section>
                 
                 <div className="assistant__grid" style={{ gridTemplateColumns: '1fr 1fr', gap: '12px', marginTop: '16px' }}>
                   <Button
@@ -2059,10 +2054,6 @@ export const IndexPage: FC = () => {
                   </Card>
                 ))}
               </div>
-            </Section>
-
-            <Section title="Совместимость растений" hint="Друзья и враги на грядке">
-              <CompatibilityWidget />
             </Section>
 
             <Section title="Сводка дня">
