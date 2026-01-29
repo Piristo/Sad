@@ -40,8 +40,9 @@
   --shadow-glow: 0 0 20px var(--primary-glow);
   
   /* Fonts */
-  --font-main: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
-  --font-display: "Playfair Display", serif;
+  --font-main: 'Manrope', -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Manrope', sans-serif; /* Используем один шрифт для консистентности, но можно вернуть Playfair */
+  --font-mono: 'SF Mono', 'Roboto Mono', monospace;
   
   /* Radius - Organic */
   --radius-sm: 12px;
