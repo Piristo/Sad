@@ -29,7 +29,7 @@
 
 .assistant {
   min-height: 100%;
-  padding: 24px 18px 120px;
+  padding: 24px 18px calc(120px + var(--tg-viewport-safe-area-inset-bottom, env(safe-area-inset-bottom, 0px)));
   display: grid;
   gap: 24px;
   background: radial-gradient(circle at top right, rgba(63, 174, 82, 0.18), transparent 45%),

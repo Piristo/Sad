@@ -65,11 +65,14 @@ export async function init(options: {
     themeParams.mount();
     miniApp.mount();
     themeParams.bindCssVars();
+    miniApp.bindCssVars();
+    miniApp.ready();
   }
 
   if (viewport.mount.isAvailable()) {
     viewport.mount().then(() => {
       viewport.bindCssVars();
+      viewport.expand.ifAvailable();
     });
   }
 }
