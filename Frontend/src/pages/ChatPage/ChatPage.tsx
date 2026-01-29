@@ -1,5 +1,6 @@
 import type { FC } from 'react';
 import { useState, useRef, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
 import { Page } from '@/components/Page';
 import { Button } from '@/components/ui';
 import './ChatPage.css';
@@ -119,7 +120,13 @@ export const ChatPage: FC = () => {
               )}
               <div className="message-content">
                 <div className={`message ${msg.sender}`}>
-                  {msg.text}
+                  {msg.sender === 'assistant' ? (
+                    <div className="markdown-content">
+                      <ReactMarkdown>{msg.text}</ReactMarkdown>
+                    </div>
+                  ) : (
+                    msg.text
+                  )}
                 </div>
                 {msg.timestamp && (
                   <span className="message-time">
