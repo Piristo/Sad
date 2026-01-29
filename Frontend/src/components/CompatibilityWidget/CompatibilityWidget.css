@@ -1,0 +1,64 @@
+.compatibility-chips {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  white-space: nowrap;
+  scrollbar-width: none;
+}
+
+.compatibility-chips::-webkit-scrollbar {
+  display: none;
+}
+
+.compatibility-result {
+  display: grid;
+  gap: 12px;
+  animation: floatIn 0.3s ease-out;
+}
+
+.compatibility-block {
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.compatibility-block--good {
+  background: rgba(157, 240, 116, 0.1);
+  border: 1px solid rgba(157, 240, 116, 0.2);
+}
+
+.compatibility-block--bad {
+  background: rgba(255, 107, 107, 0.1);
+  border: 1px solid rgba(255, 107, 107, 0.2);
+}
+
+.compatibility-title {
+  margin: 0 0 6px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(236, 246, 237, 0.9);
+}
+
+.compatibility-text {
+  margin: 0;
+  font-size: 14px;
+  color: rgba(236, 246, 237, 0.8);
+  line-height: 1.4;
+}
+
+.compatibility-tips {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 12px;
+  background: rgba(255, 209, 106, 0.1);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 209, 106, 0.2);
+  margin-top: 4px;
+}
+
+.compatibility-icon {
+  font-size: 18px;
+}

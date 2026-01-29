@@ -26,7 +26,7 @@ import { buildFeedingSchedule } from '@/assistant/feeding';
 import { buildStageSchedule } from '@/assistant/stages';
 import { getWateringSchedule } from '@/assistant/watering';
 import { getCompatibility } from '@/assistant/compatibility';
-import { COMPATIBILITY_DATA } from '@/assistant/compatibilityData';
+import { CompatibilityWidget } from '@/components/CompatibilityWidget/CompatibilityWidget';
 import type {
   CultureGroupId,
   CultureItem,
@@ -537,8 +537,6 @@ export const IndexPage: FC = () => {
     const day = String(today.getUTCDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   });
-
-  const [selectedCompatibilityId, setSelectedCompatibilityId] = useState<string>(COMPATIBILITY_DATA[0].id);
 
   // Weather notifications
   useEffect(() => {
@@ -1110,6 +1108,10 @@ export const IndexPage: FC = () => {
                   lunarPhase={phaseLabel(activeContext.phase)}
                   zodiacSign={activeContext.zodiac}
                 />
+
+                <Section title="Совместимость растений" hint="Проверьте соседей">
+                  <CompatibilityWidget />
+                </Section>
                 
                 <div className="assistant__grid" style={{ gridTemplateColumns: '1fr 1fr', gap: '12px', marginTop: '16px' }}>
                   <Button
@@ -2060,42 +2062,7 @@ export const IndexPage: FC = () => {
             </Section>
 
             <Section title="Совместимость растений" hint="Друзья и враги на грядке">
-              <Card variant="glass">
-                <div className="assistant__chips" style={{ marginBottom: '16px', overflowX: 'auto', paddingBottom: '4px' }}>
-                  {COMPATIBILITY_DATA.map((item) => (
-                    <Button
-                      key={item.id}
-                      variant={selectedCompatibilityId === item.id ? 'primary' : 'chip'}
-                      onClick={() => setSelectedCompatibilityId(item.id)}
-                    >
-                      {item.name}
-                    </Button>
-                  ))}
-                </div>
-
-                {COMPATIBILITY_DATA.find(i => i.id === selectedCompatibilityId) && (
-                  <div className="compatibility__result">
-                    <div className="compatibility__block compatibility__block--good">
-                      <h4 className="compatibility__title">💚 Друзья</h4>
-                      <p className="compatibility__text">
-                        {COMPATIBILITY_DATA.find(i => i.id === selectedCompatibilityId)?.friends.join(', ')}
-                      </p>
-                    </div>
-                    <div className="compatibility__block compatibility__block--bad">
-                      <h4 className="compatibility__title">🛑 Враги</h4>
-                      <p className="compatibility__text">
-                        {COMPATIBILITY_DATA.find(i => i.id === selectedCompatibilityId)?.enemies.join(', ')}
-                      </p>
-                    </div>
-                    <div className="compatibility__tips">
-                      <span className="compatibility__icon">💡</span>
-                      <p className="compatibility__text">
-                        {COMPATIBILITY_DATA.find(i => i.id === selectedCompatibilityId)?.tips}
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </Card>
+              <CompatibilityWidget />
             </Section>
 
             <Section title="Сводка дня">
