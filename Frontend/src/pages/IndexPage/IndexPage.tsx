@@ -4,8 +4,10 @@ import { useNavigate } from 'react-router-dom';
 
 import { Page } from '@/components/Page.tsx';
 import { Button, Card, Input, Section, Select } from '@/components/ui';
+import { TiltCard } from '@/components/TiltCard/TiltCard';
 import { WeatherWidget } from '@/components/WeatherWidget';
 import { TabBar, TabId } from '@/components/TabBar/TabBar';
+import { triggerConfetti } from '@/utils/confetti';
 import {
   CULTURE_GROUPS,
   DEFAULT_REGION,
@@ -955,6 +957,9 @@ export const IndexPage: FC = () => {
     setJournal((prev) => [entry, ...prev]);
     setJournalNotes('');
     setJournalCulture('');
+    
+    // Trigger confetti on success
+    triggerConfetti();
   };
 
   const startEditEntry = (entry: JournalEntry) => {
@@ -1500,13 +1505,15 @@ export const IndexPage: FC = () => {
                       <Section title="Карточки культур" hint="Быстрые подсказки по уходу">
                         <div className="assistant__results">
                           {cultureDetails.map((detail) => (
-                            <Card key={detail.id} variant="glass">
-                              <h3 className="assistant__title">{detail.title}</h3>
-                              <p className="assistant__meta">Полив: {detail.watering}</p>
-                              <p className="assistant__meta">Подкормка: {detail.feeding}</p>
-                              <p className="assistant__meta">Пересадка: {detail.transplant}</p>
-                              <p className="assistant__meta">Особенности: {detail.notes}</p>
-                            </Card>
+                            <TiltCard key={detail.id} className="tilt-card-demo">
+                              <Card variant="glass">
+                                <h3 className="assistant__title">{detail.title}</h3>
+                                <p className="assistant__meta">Полив: {detail.watering}</p>
+                                <p className="assistant__meta">Подкормка: {detail.feeding}</p>
+                                <p className="assistant__meta">Пересадка: {detail.transplant}</p>
+                                <p className="assistant__meta">Особенности: {detail.notes}</p>
+                              </Card>
+                            </TiltCard>
                           ))}
                         </div>
                       </Section>
@@ -2001,7 +2008,7 @@ export const IndexPage: FC = () => {
                   </p>
                   <Button
                     variant="primary"
-                    className="assistant__cta-ai"
+                    className="assistant__cta-ai glow-on-hover"
                     onClick={() => navigate('/chat')}
                     style={{ marginTop: '16px' }}
                   >

@@ -8,37 +8,118 @@
   border-radius: var(--radius-full);
   font-family: var(--font-main);
   font-weight: 600;
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.4;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s var(--ease-spring);
   border: 1px solid transparent;
   outline: none;
   text-decoration: none;
   white-space: nowrap;
   position: relative;
   overflow: hidden;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .ui-button:active {
-  transform: scale(0.96);
+  transform: scale(0.94);
 }
 
 .ui-button--primary {
-  background: var(--primary);
-  color: var(--primary-text);
-  box-shadow: 0 4px 12px var(--primary-glow);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: linear-gradient(135deg, var(--primary) 0%, #8ce065 100%);
+  color: #050a07;
+  box-shadow: 0 4px 12px var(--primary-glow), inset 0 1px 0 rgba(255,255,255,0.3);
+  border: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.ui-button--primary::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.ui-button--primary:hover::after {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .ui-button--primary:hover {
-  background: var(--primary-hover);
-  box-shadow: 0 6px 16px var(--primary-glow);
-  transform: translateY(-1px);
+  box-shadow: 0 0 20px var(--primary-glow), 0 0 40px var(--primary-glow), inset 0 1px 0 rgba(255,255,255,0.4);
+  transform: translateY(-2px);
+  text-shadow: 0 0 8px rgba(255,255,255,0.5);
+}
+
+.glow-on-hover {
+  position: relative;
+  z-index: 1;
+}
+
+.glow-on-hover::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+  background-size: 400%;
+  z-index: -1;
+  filter: blur(5px);
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  animation: glowing 20s linear infinite;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  border-radius: inherit;
+}
+
+.glow-on-hover:active {
+  color: #000;
+}
+
+.glow-on-hover:active::after {
+  background: transparent;
+}
+
+.glow-on-hover:hover::before {
+  opacity: 1;
+}
+
+.glow-on-hover::after {
+  z-index: -1;
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #111;
+  left: 0;
+  top: 0;
+  border-radius: inherit;
+}
+
+@keyframes glowing {
+  0% { background-position: 0 0; }
+  50% { background-position: 400% 0; }
+  100% { background-position: 0 0; }
+}
+
+.ui-button--primary:active {
+  transform: scale(0.94) translateY(0);
+  box-shadow: 0 2px 8px var(--primary-glow);
 }
 
 .ui-button--secondary {
-  background: var(--bg-glass-heavy);
+  background: rgba(255, 255, 255, 0.05);
   color: var(--text-main);
   border: 1px solid var(--border-glass);
   backdrop-filter: blur(var(--blur-sm));
@@ -46,7 +127,8 @@
 
 .ui-button--secondary:hover {
   background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
 }
 
 .ui-button--ghost {
@@ -63,42 +145,51 @@
 .ui-button--chip {
   padding: 8px 16px;
   font-size: 13px;
-  background: var(--bg-glass);
+  background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--border-glass);
   color: var(--text-secondary);
   border-radius: var(--radius-md);
+  transition: all 0.2s var(--ease-smooth);
 }
 
 .ui-button--chip:hover,
 .ui-button--chip.active {
-  background: var(--bg-glass-heavy);
+  background: rgba(157, 240, 116, 0.15);
   color: var(--primary);
   border-color: var(--primary);
+  box-shadow: 0 0 12px rgba(157, 240, 116, 0.2);
 }
 
 /* Card */
 .ui-card {
   background: var(--bg-secondary);
-  border-radius: var(--radius-lg);
-  padding: 20px;
+  border-radius: var(--radius-xl);
+  padding: 24px;
   margin-bottom: 16px;
   position: relative;
   overflow: hidden;
   border: 1px solid var(--border-glass);
+  transition: transform 0.3s var(--ease-smooth), box-shadow 0.3s var(--ease-smooth);
+  animation: fadeInUp 0.6s var(--ease-spring) backwards;
+}
+
+.ui-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .ui-card--glass {
-  background: var(--bg-glass);
-  backdrop-filter: blur(var(--blur-md));
-  -webkit-backdrop-filter: blur(var(--blur-md));
+  background: rgba(20, 30, 25, 0.6);
+  backdrop-filter: blur(var(--blur-lg));
+  -webkit-backdrop-filter: blur(var(--blur-lg));
   border: 1px solid var(--border-glass);
   box-shadow: var(--shadow-sm);
 }
 
 .ui-card--accent {
-  background: linear-gradient(145deg, rgba(212, 244, 104, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
-  border: 1px solid rgba(212, 244, 104, 0.15);
-  position: relative;
+  background: linear-gradient(145deg, rgba(157, 240, 116, 0.08) 0%, rgba(20, 30, 25, 0.4) 100%);
+  border: 1px solid rgba(157, 240, 116, 0.2);
+  backdrop-filter: blur(var(--blur-md));
 }
 
 .ui-card--accent::before {
@@ -109,30 +200,33 @@
   right: 0;
   height: 1px;
   background: linear-gradient(90deg, transparent, var(--primary), transparent);
-  opacity: 0.5;
+  opacity: 0.7;
+  box-shadow: 0 0 10px var(--primary);
 }
 
 /* Input & Select */
 .ui-input,
 .ui-select {
   width: 100%;
-  padding: 14px 16px;
-  background: var(--bg-input);
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.2);
   border: 1px solid var(--border-glass);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   color: var(--text-main);
   font-family: var(--font-main);
-  font-size: 15px;
-  transition: all 0.2s ease;
+  font-size: 16px;
+  transition: all 0.2s var(--ease-smooth);
   appearance: none;
+  backdrop-filter: blur(var(--blur-sm));
 }
 
 .ui-input:focus,
 .ui-select:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(212, 244, 104, 0.1);
+  box-shadow: 0 0 0 4px rgba(157, 240, 116, 0.15);
   background: rgba(0, 0, 0, 0.4);
+  transform: translateY(-1px);
 }
 
 .ui-input::placeholder {
