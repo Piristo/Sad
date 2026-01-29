@@ -40,7 +40,8 @@ body {
   background-attachment: fixed;
   
   position: relative;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   box-shadow: 0 0 50px rgba(0,0,0,0.5); /* Shadow for desktop view */
 }
 

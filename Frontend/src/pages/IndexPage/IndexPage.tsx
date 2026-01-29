@@ -2124,8 +2124,8 @@ export const IndexPage: FC = () => {
           </div>
         )}
 
-        <TabBar activeTab={activeTab} onTabChange={setActiveTab} />
       </div>
+      <TabBar activeTab={activeTab} onTabChange={setActiveTab} />
     </Page>
   );
 };
