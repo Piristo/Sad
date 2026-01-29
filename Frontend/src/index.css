@@ -45,25 +45,49 @@ body {
   
   /* App background */
   background: var(--bg-primary);
-  background-image: 
-    radial-gradient(circle at 0% 0%, rgba(157, 240, 116, 0.08) 0%, transparent 40%),
-    radial-gradient(circle at 100% 0%, rgba(79, 195, 247, 0.05) 0%, transparent 40%),
-    radial-gradient(circle at 100% 100%, rgba(157, 240, 116, 0.05) 0%, transparent 40%),
-    radial-gradient(circle at 0% 100%, rgba(79, 195, 247, 0.03) 0%, transparent 40%);
-  background-attachment: fixed;
-  background-size: 200% 200%;
-  animation: bg-pulse 15s ease infinite alternate;
-  
   position: relative;
   overflow-y: auto;
   overflow-x: hidden;
   box-shadow: 0 0 50px rgba(0,0,0,0.5); /* Shadow for desktop view */
+  z-index: 0;
 }
 
-/* Animations */
-@keyframes bg-pulse {
-  0% { background-position: 0% 0%; }
-  100% { background-position: 100% 100%; }
+/* Organic Background Blobs */
+#root::before,
+#root::after {
+  content: '';
+  position: fixed;
+  width: 80vw;
+  height: 80vw;
+  max-width: 400px;
+  max-height: 400px;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.15;
+  z-index: -1;
+  animation: blob-float 25s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+#root::before {
+  background: radial-gradient(circle, var(--primary), transparent 70%);
+  top: -10%;
+  left: -20%;
+}
+
+#root::after {
+  background: radial-gradient(circle, var(--accent-blue), transparent 70%);
+  bottom: -10%;
+  right: -20%;
+  animation-delay: -12s;
+  animation-direction: alternate-reverse;
+}
+
+@keyframes blob-float {
+  0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  33% { transform: translate(30px, 50px) scale(1.1) rotate(10deg); }
+  66% { transform: translate(-20px, 20px) scale(0.9) rotate(-5deg); }
+  100% { transform: translate(10px, -30px) scale(1.05) rotate(5deg); }
 }
 
 @keyframes float {

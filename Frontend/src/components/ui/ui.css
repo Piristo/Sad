@@ -179,11 +179,36 @@
 }
 
 .ui-card--glass {
-  background: rgba(20, 30, 25, 0.6);
+  background: var(--bg-glass);
   backdrop-filter: blur(var(--blur-lg));
   -webkit-backdrop-filter: blur(var(--blur-lg));
-  border: 1px solid var(--border-glass);
+  border: 1px solid transparent;
   box-shadow: var(--shadow-sm);
+  
+  /* Gradient Border Magic */
+  background-image: linear-gradient(rgba(20, 30, 25, 0.6), rgba(20, 30, 25, 0.6)), 
+                    linear-gradient(145deg, rgba(255,255,255,0.15), rgba(255,255,255,0.02));
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+}
+
+/* Noise Overlay */
+.ui-card--glass::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: var(--noise-texture);
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: -1;
+  border-radius: inherit;
+  mix-blend-mode: overlay;
+}
+
+/* Content needs to be above noise */
+.ui-card > * {
+  position: relative;
+  z-index: 1;
 }
 
 .ui-card--accent {
