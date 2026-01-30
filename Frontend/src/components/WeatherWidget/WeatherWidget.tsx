@@ -55,20 +55,21 @@ export const WeatherWidget: FC<WeatherWidgetProps> = ({
   if (weather.error) {
     return (
       <Card variant="glass" className="weather-widget weather-widget--error">
-        <div className="weather-widget__header">
-          <div className="weather-widget__location" onClick={() => {
+        <div className="weather-widget__header-compact">
+          <div className="weather-widget__location-compact" onClick={() => {
             setNewCity(city);
             setIsEditing(true);
           }}>
             <span className="weather-widget__city">{weather.city}</span>
             <span className="weather-widget__edit-icon">✎</span>
           </div>
+          {currentTime && <div className="weather-widget__time-compact">{currentTime}</div>}
         </div>
         <div className="weather-widget__error-msg">
           ⚠️ {weather.recommendations[0] || weather.error}
         </div>
         {isEditing && (
-          <div className="weather-widget__city-edit">
+          <div className="weather-widget__city-edit-compact">
             <Input 
               value={newCity}
               onChange={(e) => setNewCity(e.target.value)}
@@ -85,97 +86,103 @@ export const WeatherWidget: FC<WeatherWidgetProps> = ({
 
   return (
     <Card variant="glass" className="weather-widget">
-      <div className="weather-widget__header">
-        <div className="weather-widget__header-left">
-          {isEditing ? (
-            <div className="weather-widget__city-edit">
-              <Input 
-                value={newCity}
-                onChange={(e) => setNewCity(e.target.value)}
-                placeholder="Введите город"
-                autoFocus
-              />
-              <Button variant="chip" onClick={handleCitySubmit}>OK</Button>
-              <Button variant="chip" onClick={() => setIsEditing(false)}>✕</Button>
-            </div>
-          ) : (
-            <div className="weather-widget__location" onClick={() => {
-              setNewCity(city);
-              setIsEditing(true);
-            }}>
-              <span className="weather-widget__city">{weather.city}</span>
-              <span className="weather-widget__edit-icon">✎</span>
-            </div>
-          )}
+      {/* Compact Header */}
+      <div className="weather-widget__header-compact">
+        <div className="weather-widget__location-compact" onClick={() => {
+          setNewCity(city);
+          setIsEditing(true);
+        }}>
+          <span className="weather-widget__city">{weather.city}</span>
+          <span className="weather-widget__edit-icon">✎</span>
+        </div>
+        
+        <div className="weather-widget__header-right">
+          {currentTime && <div className="weather-widget__time-compact">{currentTime}</div>}
           {(lunarPhase || zodiacSign) && (
-            <div className="weather-widget__lunar">
+            <div className="weather-widget__lunar-compact">
               {lunarPhase && <span>🌑 {lunarPhase}</span>}
               {zodiacSign && <span> • {zodiacSign}</span>}
             </div>
           )}
         </div>
-        
-        {currentTime && (
-          <div className="weather-widget__time">
-            {currentTime}
-          </div>
-        )}
       </div>
 
-      <div className="weather-widget__main">
-        <div className="weather-widget__temp-block">
+      {/* Compact Main Weather */}
+      <div className="weather-widget__main-compact">
+        <div className="weather-widget__temp-block-compact">
           <img 
             src={weatherService.getWeatherIconUrl(weather.icon)} 
             alt={weather.description}
-            className="weather-widget__icon"
+            className="weather-widget__icon-compact"
           />
-          <div className="weather-widget__temp-info">
+          <div className="weather-widget__temp-info-compact">
             <span 
-              className="weather-widget__temp"
+              className="weather-widget__temp-compact"
               style={{ color: weatherService.getTemperatureColor(weather.temperature) }}
             >
               {weather.temperature > 0 ? '+' : ''}{weather.temperature}°
             </span>
-            <span className="weather-widget__desc">{weather.description}</span>
+            <span className="weather-widget__desc-compact">{weather.description}</span>
           </div>
         </div>
         
-        <div className="weather-widget__details">
-          <div className="weather-widget__detail">
-            <AnimatedIcon name="water" size={18} /> {weather.humidity}%
+        <div className="weather-widget__details-compact">
+          <div className="weather-widget__detail-pill">
+            <AnimatedIcon name="water" size={14} />
+            <span>{weather.humidity}%</span>
           </div>
-          <div className="weather-widget__detail">
-            <AnimatedIcon name="cloud" size={18} /> {weather.wind_speed} м/с
+          <div className="weather-widget__detail-pill">
+            <AnimatedIcon name="cloud" size={14} />
+            <span>{weather.wind_speed} м/с</span>
           </div>
-          <div className="weather-widget__detail">
-            <AnimatedIcon name="sun" size={18} /> Ощ. {weather.feels_like > 0 ? '+' : ''}{weather.feels_like}°
+          <div className="weather-widget__detail-pill">
+            <AnimatedIcon name="sun" size={14} />
+            <span>Ощ. {weather.feels_like > 0 ? '+' : ''}{weather.feels_like}°</span>
           </div>
         </div>
       </div>
 
+      {/* Compact Recommendations */}
       {weather.recommendations && weather.recommendations.length > 0 && (
-        <div className="weather-widget__recommendations">
+        <div className="weather-widget__recommendations-compact">
           {weather.recommendations.map((rec, idx) => (
-            <p key={idx} className="weather-widget__rec">{rec}</p>
+            <p key={idx} className="weather-widget__rec-compact">{rec}</p>
           ))}
         </div>
       )}
 
-      <div className="weather-widget__forecast">
-        {weather.forecast && weather.forecast.map((day, idx) => (
-          <div key={idx} className="weather-widget__day">
-            <span className="weather-widget__day-name">{day.day}</span>
-            <img 
-              src={weatherService.getWeatherIconUrl(day.icon)} 
-              alt={day.description}
-              className="weather-widget__day-icon"
-            />
-            <span className="weather-widget__day-temp">
-              {day.temp > 0 ? '+' : ''}{day.temp}°
-            </span>
-          </div>
-        ))}
-      </div>
+      {/* Compact Forecast */}
+      {weather.forecast && weather.forecast.length > 0 && (
+        <div className="weather-widget__forecast-compact">
+          {weather.forecast.map((day, idx) => (
+            <div key={idx} className="weather-widget__day-compact">
+              <span className="weather-widget__day-name-compact">{day.day}</span>
+              <img 
+                src={weatherService.getWeatherIconUrl(day.icon)} 
+                alt={day.description}
+                className="weather-widget__day-icon-compact"
+              />
+              <span className="weather-widget__day-temp-compact">
+                {day.temp > 0 ? '+' : ''}{day.temp}°
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* City Edit (if needed) */}
+      {isEditing && (
+        <div className="weather-widget__city-edit-compact">
+          <Input 
+            value={newCity}
+            onChange={(e) => setNewCity(e.target.value)}
+            placeholder="Введите город"
+            autoFocus
+          />
+          <Button variant="chip" onClick={handleCitySubmit}>OK</Button>
+          <Button variant="chip" onClick={() => setIsEditing(false)}>✕</Button>
+        </div>
+      )}
     </Card>
   );
 };

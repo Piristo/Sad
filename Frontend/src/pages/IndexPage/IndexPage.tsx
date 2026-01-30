@@ -8,6 +8,8 @@ import { TiltCard } from '@/components/TiltCard/TiltCard';
 import { WeatherWidget } from '@/components/WeatherWidget';
 import { TabBar, TabId } from '@/components/TabBar/TabBar';
 import { triggerConfetti } from '@/utils/confetti';
+import { haptic } from '@/utils/haptic';
+import { useCloudStorage } from '@/hooks/useCloudStorage';
 import { AnimatedIcon } from '@/components/AnimatedIcon/AnimatedIcon';
 import { AmbientParticles } from '@/components/AmbientParticles/AmbientParticles';
 import {
@@ -272,6 +274,7 @@ interface PlotProfile {
 const PLOTS_STORAGE_KEY = 'garden-plots';
 const PLOT_CULTURES_KEY = 'garden-plot-cultures';
 const REMINDERS_STORAGE_KEY = 'garden-reminders';
+const JOURNAL_STORAGE_KEY = 'garden-journal';
 
 const DEFAULT_PLOTS: PlotProfile[] = [
   {
@@ -293,46 +296,6 @@ interface JournalEntry {
   notes: string;
 }
 
-const JOURNAL_STORAGE_KEY = 'garden-journal';
-
-function loadJournal(): JournalEntry[] {
-  if (typeof window === 'undefined') {
-    return [];
-  }
-  try {
-    const raw = localStorage.getItem(JOURNAL_STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as JournalEntry[]) : [];
-  } catch {
-    return [];
-  }
-}
-
-function loadPlots(): PlotProfile[] {
-  if (typeof window === 'undefined') {
-    return DEFAULT_PLOTS;
-  }
-
-  try {
-    const raw = localStorage.getItem(PLOTS_STORAGE_KEY);
-    const parsed = raw ? (JSON.parse(raw) as PlotProfile[]) : DEFAULT_PLOTS;
-    return Array.isArray(parsed) && parsed.length ? parsed : DEFAULT_PLOTS;
-  } catch {
-    return DEFAULT_PLOTS;
-  }
-}
-
-function loadPlotCultures(): Record<string, string[]> {
-  if (typeof window === 'undefined') {
-    return {};
-  }
-  try {
-    const raw = localStorage.getItem(PLOT_CULTURES_KEY);
-    return raw ? (JSON.parse(raw) as Record<string, string[]>) : {};
-  } catch {
-    return {};
-  }
-}
-
 interface ReminderItem {
   id: string;
   time: number;
@@ -341,17 +304,7 @@ interface ReminderItem {
   fired?: boolean;
 }
 
-function loadReminders(): ReminderItem[] {
-  if (typeof window === 'undefined') {
-    return [];
-  }
-  try {
-    const raw = localStorage.getItem(REMINDERS_STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as ReminderItem[]) : [];
-  } catch {
-    return [];
-  }
-}
+
 
 interface PestControlItem {
   id: string;
@@ -472,12 +425,15 @@ export const IndexPage: FC = () => {
   const [planStep, setPlanStep] = useState(0);
   const [careStep, setCareStep] = useState(0);
 
-  const initialPlots = useMemo(() => loadPlots(), []);
-  const [plots, setPlots] = useState<PlotProfile[]>(initialPlots);
-  const [plotCultures, setPlotCultures] = useState<Record<string, string[]>>(loadPlotCultures());
-  const [activePlotId, setActivePlotId] = useState(
-    initialPlots[0]?.id ?? DEFAULT_PLOTS[0].id,
-  );
+  const [plots, setPlots] = useCloudStorage<PlotProfile[]>(PLOTS_STORAGE_KEY, DEFAULT_PLOTS);
+  const [plotCultures, setPlotCultures] = useCloudStorage<Record<string, string[]>>(PLOT_CULTURES_KEY, {});
+  const [activePlotId, setActivePlotId] = useState(DEFAULT_PLOTS[0].id);
+
+  useEffect(() => {
+    if (plots.length > 0 && !plots.find(p => p.id === activePlotId)) {
+      setActivePlotId(plots[0].id);
+    }
+  }, [plots, activePlotId]);
   const [newPlotName, setNewPlotName] = useState('');
   const [selectedPest, setSelectedPest] = useState<PestControlItem | null>(null);
 
@@ -502,8 +458,7 @@ export const IndexPage: FC = () => {
 
   const activeContext = autoContext;
 
-  const initialJournal = useMemo(() => loadJournal(), []);
-  const [journal, setJournal] = useState<JournalEntry[]>(initialJournal);
+  const [journal, setJournal] = useCloudStorage<JournalEntry[]>(JOURNAL_STORAGE_KEY, []);
   const [journalType, setJournalType] = useState<JournalType>('посадка');
   const [journalCulture, setJournalCulture] = useState('');
   const [journalNotes, setJournalNotes] = useState('');
@@ -515,7 +470,7 @@ export const IndexPage: FC = () => {
   const [editType, setEditType] = useState<JournalType>('посадка');
 
   const [currentTime, setCurrentTime] = useState('');
-  const [reminders, setReminders] = useState<ReminderItem[]>(loadReminders());
+  const [reminders, setReminders] = useCloudStorage<ReminderItem[]>(REMINDERS_STORAGE_KEY, []);
   const [showSuccess, setShowSuccess] = useState(false);
   const [notificationPermission, setNotificationPermission] = useState<NotificationPermission | 'unsupported'>(() => {
     if (typeof window === 'undefined' || !('Notification' in window)) {
@@ -567,25 +522,7 @@ export const IndexPage: FC = () => {
     checkWeatherAlerts();
   }, []);
 
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    localStorage.setItem(PLOTS_STORAGE_KEY, JSON.stringify(plots));
-  }, [plots]);
 
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    localStorage.setItem(JOURNAL_STORAGE_KEY, JSON.stringify(journal));
-  }, [journal]);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    localStorage.setItem(PLOT_CULTURES_KEY, JSON.stringify(plotCultures));
-  }, [plotCultures]);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    localStorage.setItem(REMINDERS_STORAGE_KEY, JSON.stringify(reminders));
-  }, [reminders]);
 
   useEffect(() => {
     const formatter = new Intl.DateTimeFormat('ru-RU', {
@@ -962,6 +899,7 @@ export const IndexPage: FC = () => {
     setJournalCulture('');
     
     // Trigger confetti and success animation
+    haptic.notification('success');
     setShowSuccess(true);
     setTimeout(() => setShowSuccess(false), 2000);
     triggerConfetti();
@@ -1109,6 +1047,15 @@ export const IndexPage: FC = () => {
           </p>
         </header>
 
+        {/* Debug Haptic Controls */}
+        <div style={{ padding: '0 20px 20px', display: 'flex', gap: '8px', overflowX: 'auto' }}>
+          <Button variant="chip" onClick={() => haptic.impact('light')}>Light</Button>
+          <Button variant="chip" onClick={() => haptic.impact('medium')}>Medium</Button>
+          <Button variant="chip" onClick={() => haptic.impact('heavy')}>Heavy</Button>
+          <Button variant="chip" onClick={() => haptic.notification('success')}>Success</Button>
+          <Button variant="chip" onClick={() => haptic.notification('error')}>Error</Button>
+        </div>
+
         {activeTab === 'home' && (
           <div className="tab-content">
             {flow === 'home' && (
@@ -1123,6 +1070,7 @@ export const IndexPage: FC = () => {
                   <Button
                     variant="secondary"
                     onClick={() => {
+                      haptic.impact('light');
                       setPlanStep(0);
                       setFlow('plan');
                     }}
@@ -1134,6 +1082,7 @@ export const IndexPage: FC = () => {
                   <Button
                     variant="secondary"
                     onClick={() => {
+                      haptic.impact('light');
                       setCareStep(0);
                       setFlow('care');
                     }}
@@ -1145,6 +1094,7 @@ export const IndexPage: FC = () => {
                   <Button
                     variant="secondary"
                     onClick={() => {
+                      haptic.impact('light');
                       setFlow('feeding');
                     }}
                     style={{ height: 'auto', padding: '16px', flexDirection: 'column', gap: '8px' }}
@@ -1155,6 +1105,7 @@ export const IndexPage: FC = () => {
                   <Button
                     variant="secondary"
                     onClick={() => {
+                      haptic.impact('light');
                       setFlow('orchard');
                     }}
                     style={{ height: 'auto', padding: '16px', flexDirection: 'column', gap: '8px' }}

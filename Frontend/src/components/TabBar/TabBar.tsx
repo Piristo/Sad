@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { haptic } from '@/utils/haptic';
 import './TabBar.css';
 
 export type TabId = 'home' | 'calendar' | 'assistant' | 'profile';
@@ -9,11 +10,16 @@ interface TabBarProps {
 }
 
 export const TabBar: FC<TabBarProps> = ({ activeTab, onTabChange }) => {
+  const handleTabClick = (tab: TabId) => {
+    onTabChange(tab);
+    haptic.selection();
+  };
+
   return (
     <nav className="tab-bar">
       <button 
         className={`tab-bar__item ${activeTab === 'home' ? 'active' : ''}`}
-        onClick={() => onTabChange('home')}
+        onClick={() => handleTabClick('home')}
       >
         <svg className="tab-bar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
@@ -24,7 +30,7 @@ export const TabBar: FC<TabBarProps> = ({ activeTab, onTabChange }) => {
 
       <button 
         className={`tab-bar__item ${activeTab === 'calendar' ? 'active' : ''}`}
-        onClick={() => onTabChange('calendar')}
+        onClick={() => handleTabClick('calendar')}
       >
         <svg className="tab-bar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
@@ -37,7 +43,7 @@ export const TabBar: FC<TabBarProps> = ({ activeTab, onTabChange }) => {
 
       <button 
         className={`tab-bar__item ${activeTab === 'assistant' ? 'active' : ''}`}
-        onClick={() => onTabChange('assistant')}
+        onClick={() => handleTabClick('assistant')}
       >
         <svg className="tab-bar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
@@ -47,7 +53,7 @@ export const TabBar: FC<TabBarProps> = ({ activeTab, onTabChange }) => {
 
       <button 
         className={`tab-bar__item ${activeTab === 'profile' ? 'active' : ''}`}
-        onClick={() => onTabChange('profile')}
+        onClick={() => handleTabClick('profile')}
       >
         <svg className="tab-bar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />

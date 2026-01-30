@@ -57,5 +57,35 @@ export async function setupMockEnv() {
     ]),
   });
 
+  // Add WebApp properties for haptic and cloud storage
+  if (typeof window !== 'undefined') {
+    (window as any).Telegram = {
+      WebApp: {
+        HapticFeedback: {
+          impactOccurred: () => {},
+          notificationOccurred: () => {},
+          selectionChanged: () => {},
+        },
+        CloudStorage: {
+          setItem: (_key: string, _value: string, callback?: (error: Error | null, stored: boolean) => void) => {
+            if (callback) callback(null, true);
+          },
+          getItem: (_key: string, callback: (error: Error | null, value: string) => void) => {
+            callback(null, '');
+          },
+          getItems: (_keys: string[], callback: (error: Error | null, values: Record<string, string>) => void) => {
+            callback(null, {});
+          },
+          removeItem: (_key: string, callback?: (error: Error | null, removed: boolean) => void) => {
+            if (callback) callback(null, true);
+          },
+          removeItems: (_keys: string[], callback?: (error: Error | null, removed: boolean) => void) => {
+            if (callback) callback(null, true);
+          },
+        },
+      },
+    };
+  }
+
   console.info('⚠️ Environment mocked for Web usage');
 }
