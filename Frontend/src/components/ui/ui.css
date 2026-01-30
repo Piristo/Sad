@@ -22,8 +22,39 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Magnetic Effect */
+.ui-button:hover {
+  transform: translateY(-2px) scale(1.02);
+}
+
 .ui-button:active {
-  transform: scale(0.94);
+  transform: translateY(1px) scale(0.98);
+}
+
+.ui-button--liquid {
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.ui-button--liquid::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 60%);
+  transform: scale(0);
+  opacity: 0;
+  transition: transform 0.5s, opacity 0.3s;
+  border-radius: inherit;
+}
+
+.ui-button--liquid:active::after {
+  transform: scale(4);
+  opacity: 1;
+  transition: 0s;
 }
 
 .ui-button--primary {
@@ -295,4 +326,29 @@
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+/* Gradient Text Animation */
+.gradient-text {
+  background: linear-gradient(to right, var(--primary), #4facfe, var(--primary));
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-flow 5s linear infinite;
+}
+
+@keyframes gradient-flow {
+  to { background-position: 200% center; }
+}
+
+/* Neon Pulse */
+.neon-pulse {
+  box-shadow: 0 0 10px var(--primary-glow);
+  animation: neon-pulse-anim 2s infinite;
+}
+
+@keyframes neon-pulse-anim {
+  0% { box-shadow: 0 0 10px var(--primary-glow); }
+  50% { box-shadow: 0 0 20px var(--primary-glow), 0 0 40px var(--primary-glow); }
+  100% { box-shadow: 0 0 10px var(--primary-glow); }
 }

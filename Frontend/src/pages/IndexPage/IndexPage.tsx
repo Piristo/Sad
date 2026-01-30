@@ -8,6 +8,8 @@ import { TiltCard } from '@/components/TiltCard/TiltCard';
 import { WeatherWidget } from '@/components/WeatherWidget';
 import { TabBar, TabId } from '@/components/TabBar/TabBar';
 import { triggerConfetti } from '@/utils/confetti';
+import { AnimatedIcon } from '@/components/AnimatedIcon/AnimatedIcon';
+import { AmbientParticles } from '@/components/AmbientParticles/AmbientParticles';
 import {
   CULTURE_GROUPS,
   DEFAULT_REGION,
@@ -514,6 +516,7 @@ export const IndexPage: FC = () => {
 
   const [currentTime, setCurrentTime] = useState('');
   const [reminders, setReminders] = useState<ReminderItem[]>(loadReminders());
+  const [showSuccess, setShowSuccess] = useState(false);
   const [notificationPermission, setNotificationPermission] = useState<NotificationPermission | 'unsupported'>(() => {
     if (typeof window === 'undefined' || !('Notification' in window)) {
       return 'unsupported' as const;
@@ -958,7 +961,9 @@ export const IndexPage: FC = () => {
     setJournalNotes('');
     setJournalCulture('');
     
-    // Trigger confetti on success
+    // Trigger confetti and success animation
+    setShowSuccess(true);
+    setTimeout(() => setShowSuccess(false), 2000);
     triggerConfetti();
   };
 
@@ -1073,6 +1078,7 @@ export const IndexPage: FC = () => {
 
   return (
     <Page back={false}>
+      <AmbientParticles />
       <div className="assistant">
         <header className="assistant__header">
           <div className="assistant__topline">
@@ -1093,7 +1099,7 @@ export const IndexPage: FC = () => {
               </div>
               <div>
                 <p className="assistant__eyebrow">Лунный помощник</p>
-                <h1 className="assistant__title">Умный садовник</h1>
+                <h1 className="assistant__title gradient-text">Умный садовник</h1>
               </div>
             </div>
             <div className="assistant__avatar" />
@@ -1122,7 +1128,7 @@ export const IndexPage: FC = () => {
                     }}
                     style={{ height: 'auto', padding: '16px', flexDirection: 'column', gap: '8px' }}
                   >
-                    <span style={{ fontSize: '24px' }}>🌱</span>
+                    <AnimatedIcon name="plant" size={32} />
                     <span>Посадки</span>
                   </Button>
                   <Button
@@ -1133,7 +1139,7 @@ export const IndexPage: FC = () => {
                     }}
                     style={{ height: 'auto', padding: '16px', flexDirection: 'column', gap: '8px' }}
                   >
-                    <span style={{ fontSize: '24px' }}>🛠️</span>
+                    <AnimatedIcon name="leaf" size={32} />
                     <span>Уход</span>
                   </Button>
                   <Button
@@ -1143,7 +1149,7 @@ export const IndexPage: FC = () => {
                     }}
                     style={{ height: 'auto', padding: '16px', flexDirection: 'column', gap: '8px' }}
                   >
-                    <span style={{ fontSize: '24px' }}>💧</span>
+                    <AnimatedIcon name="water" size={32} />
                     <span>Подкормка</span>
                   </Button>
                   <Button
@@ -1153,7 +1159,7 @@ export const IndexPage: FC = () => {
                     }}
                     style={{ height: 'auto', padding: '16px', flexDirection: 'column', gap: '8px' }}
                   >
-                    <span style={{ fontSize: '24px' }}>🌳</span>
+                    <AnimatedIcon name="flower" size={32} />
                     <span>Сад</span>
                   </Button>
                 </div>
@@ -1205,8 +1211,8 @@ export const IndexPage: FC = () => {
                               className="journal__input"
                             />
                           </div>
-                          <Button variant="primary" onClick={addJournalEntry} className="journal__add-button">
-                            Добавить
+                          <Button variant="primary" onClick={addJournalEntry} className="journal__add-button ui-button--liquid">
+                            {showSuccess ? <AnimatedIcon name="success" size={20} /> : 'Добавить'}
                           </Button>
                         </div>
                       </div>

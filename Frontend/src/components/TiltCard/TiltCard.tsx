@@ -37,12 +37,34 @@ export const TiltCard: React.FC<TiltCardProps> = ({
       card.style.setProperty('--rotateY', '0deg');
     };
 
+    const handleOrientation = (e: DeviceOrientationEvent) => {
+      if (e.gamma === null || e.beta === null) return;
+      
+      // Gamma: Left/Right tilt
+      // Beta: Front/Back tilt (subtract 45deg for holding position)
+      const rotateY = Math.min(Math.max(e.gamma / 2, -maxRotation), maxRotation);
+      const rotateX = Math.min(Math.max((e.beta - 45) / 2, -maxRotation), maxRotation);
+      
+      requestAnimationFrame(() => {
+        card.style.setProperty('--rotateX', `${-rotateX}deg`);
+        card.style.setProperty('--rotateY', `${rotateY}deg`);
+      });
+    };
+
     card.addEventListener('mousemove', handleMouseMove);
     card.addEventListener('mouseleave', handleMouseLeave);
+    
+    // Add gyroscope support for mobile
+    if (window.DeviceOrientationEvent && 'ontouchstart' in window) {
+      window.addEventListener('deviceorientation', handleOrientation);
+    }
 
     return () => {
       card.removeEventListener('mousemove', handleMouseMove);
       card.removeEventListener('mouseleave', handleMouseLeave);
+      if (window.DeviceOrientationEvent && 'ontouchstart' in window) {
+        window.removeEventListener('deviceorientation', handleOrientation);
+      }
     };
   }, [maxRotation]);
 

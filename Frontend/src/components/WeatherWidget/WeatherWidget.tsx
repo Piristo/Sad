@@ -1,6 +1,7 @@
 import { FC, useEffect, useState } from 'react';
 import { Card, Button, Input } from '@/components/ui';
 import { weatherService, WeatherData } from '@/services/weather';
+import { AnimatedIcon } from '@/components/AnimatedIcon/AnimatedIcon';
 import './WeatherWidget.css';
 
 interface WeatherWidgetProps {
@@ -141,13 +142,13 @@ export const WeatherWidget: FC<WeatherWidgetProps> = ({
         
         <div className="weather-widget__details">
           <div className="weather-widget__detail">
-            <span>💧</span> {weather.humidity}%
+            <AnimatedIcon name="water" size={18} /> {weather.humidity}%
           </div>
           <div className="weather-widget__detail">
-            <span>💨</span> {weather.wind_speed} м/с
+            <AnimatedIcon name="cloud" size={18} /> {weather.wind_speed} м/с
           </div>
           <div className="weather-widget__detail">
-            <span>🌡️</span> Ощ. {weather.feels_like > 0 ? '+' : ''}{weather.feels_like}°
+            <AnimatedIcon name="sun" size={18} /> Ощ. {weather.feels_like > 0 ? '+' : ''}{weather.feels_like}°
           </div>
         </div>
       </div>
