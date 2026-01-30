@@ -1047,14 +1047,7 @@ export const IndexPage: FC = () => {
           </p>
         </header>
 
-        {/* Debug Haptic Controls */}
-        <div style={{ padding: '0 20px 20px', display: 'flex', gap: '8px', overflowX: 'auto' }}>
-          <Button variant="chip" onClick={() => haptic.impact('light')}>Light</Button>
-          <Button variant="chip" onClick={() => haptic.impact('medium')}>Medium</Button>
-          <Button variant="chip" onClick={() => haptic.impact('heavy')}>Heavy</Button>
-          <Button variant="chip" onClick={() => haptic.notification('success')}>Success</Button>
-          <Button variant="chip" onClick={() => haptic.notification('error')}>Error</Button>
-        </div>
+
 
         {activeTab === 'home' && (
           <div className="tab-content">
